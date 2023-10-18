@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {Formik} from "formik";
+import {Formik, FormikHelpers} from "formik";
 import * as Yup from "yup";
 import {FormValues} from "./types";
 import {createUser} from "../core/requests/createUser";
@@ -23,7 +23,7 @@ const schema = Yup.object().shape({
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
-  const {mutate: register} = useMutation(
+  const {mutateAsync: register} = useMutation(
     (values: FormValues) => createUser(values),
     {
       onSuccess: (_, values) => {
@@ -33,13 +33,26 @@ export const RegisterPage = () => {
         );
         navigate("/workspace");
       },
+      onError: (error) => {
+        window.alert(
+          "Something went wrong. Please try again. Error code - " + error
+        );
+      },
     }
   );
+
+  const handleSubmit = async (
+    values: FormValues,
+    {setSubmitting}: FormikHelpers<FormValues>
+  ) => {
+    await register(values);
+    setSubmitting(false);
+  };
 
   return (
     <Formik
       initialValues={{username: "", password: ""}}
-      onSubmit={(values) => register(values)}
+      onSubmit={handleSubmit}
       validationSchema={schema}
     >
       {({

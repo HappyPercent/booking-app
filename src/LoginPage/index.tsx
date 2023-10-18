@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {Formik} from "formik";
+import {Formik, FormikHelpers} from "formik";
 import * as Yup from "yup";
 import {FormValues} from "./types";
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStorage";
@@ -23,7 +23,7 @@ const schema = Yup.object().shape({
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const {mutate: login} = useMutation(
+  const {mutateAsync: login} = useMutation(
     (values: FormValues) => loginUser(values),
     {
       onSuccess: (_, values) => {
@@ -35,16 +35,24 @@ export const LoginPage = () => {
       },
       onError: (error) => {
         window.alert(
-          "Something went wrong. Please try again. Error - " + error
+          "Something went wrong. Please try again. Error code - " + error
         );
       },
     }
   );
 
+  const handleSubmit = async (
+    values: FormValues,
+    {setSubmitting}: FormikHelpers<FormValues>
+  ) => {
+    await login(values);
+    setSubmitting(false);
+  };
+
   return (
     <Formik
       initialValues={{username: "", password: ""}}
-      onSubmit={(values) => login(values)}
+      onSubmit={handleSubmit}
       validationSchema={schema}
     >
       {({
