@@ -7,52 +7,45 @@ import {
   Typography,
 } from "@mui/material";
 import {IDesk, IService} from "../../core/constants/types";
-import {useMemo, useState} from "react";
+import {useState} from "react";
 import {NewDeskDialog} from "./NewDeskDialog";
 
 export const DesksGrid = ({
   data = [],
 }: {
-  data: {desk: IDesk; proposal: IService}[];
+  data: {[key in IDesk["id"]]: {desk: IDesk; proposals: IService[]}};
 }) => {
+  console.log("data: ", data);
   const [open, setOpen] = useState(false);
-
-  const gridData = useMemo(
-    () =>
-      data.reduce((curr, next) => {
-        const {desk, proposal} = next;
-        if (curr[desk.id]) {
-          curr[desk.id].proposals.push(proposal);
-        } else {
-          curr[desk.id] = {...desk, proposals: [proposal]};
-        }
-        return curr;
-      }, {} as {[key in IDesk["id"]]: IDesk & {proposals: IService[]}}),
-    [data]
-  );
 
   return (
     <>
       <NewDeskDialog open={open} onClose={() => setOpen(false)} />
       <Stack
         direction={"row"}
-        spacing={0}
+        spacing={1}
         divider={<Divider orientation="vertical" flexItem />}
       >
-        {Object.values(gridData).map((desk) => (
-          <Stack spacing={0} divider={<Divider />}>
-            <Typography variant="body2">{desk.name}</Typography>
-            <List>
-              {desk.proposals.map((proposal) => (
-                <ListItem>{proposal.name}</ListItem>
-              ))}
-            </List>
+        {Object.values(data).map((item) => (
+          <Stack spacing={1} divider={<Divider />}>
+            <Typography variant="body1">{item.desk.name}</Typography>
+            {!!item.proposals?.length && (
+              <List>
+                {item.proposals?.map((proposal) => (
+                  <ListItem>{proposal?.name || ""}</ListItem>
+                ))}
+              </List>
+            )}
+            <Button variant="outlined" size="small">
+              Link proposal
+            </Button>
           </Stack>
         ))}
 
         <Button
           sx={{
             marginLeft: 2,
+            alignSelf: "baseline",
           }}
           variant="contained"
           onClick={() => setOpen(true)}

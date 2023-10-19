@@ -8,13 +8,14 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Formik} from "formik";
 import * as Yup from "yup";
 import {getAllCountries} from "../../core/requests/getAllCountries";
 import {useMemo} from "react";
 import {getCityByCountry} from "../../core/requests/getCityByCountry";
 import {ICity, ICountry} from "../../core/constants/types";
+import {createDesk} from "../../core/requests/createDesk";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -39,6 +40,17 @@ export const NewDeskDialog = ({
   open: boolean;
   onClose: () => void;
 }) => {
+  const queryClient = useQueryClient();
+  const {mutate} = useMutation(
+    (values: {countryId: number; cityId: number; name: string}) =>
+      createDesk(values),
+    {
+      onSuccess: () => {
+        onClose();
+        queryClient.invalidateQueries(["desks"]);
+      },
+    }
+  );
   const {data: countries} = useQuery<{content: ICountry[]}>(
     ["countries"],
     getAllCountries,
@@ -56,7 +68,14 @@ export const NewDeskDialog = ({
     [countries]
   );
   const handleSubmit = (values: typeof initialValues) => {
-    console.log(values);
+    if (values.city?.id && values.country?.id) {
+      const data = {
+        name: values.name,
+        cityId: values.city.id,
+        countryId: values.country.id,
+      };
+      mutate(data);
+    }
   };
 
   return (

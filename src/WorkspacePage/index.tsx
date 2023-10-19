@@ -6,6 +6,9 @@ import {DesksGrid} from "./DesksGrid";
 import {useQuery} from "@tanstack/react-query";
 import {getUserDesks} from "../core/requests/getUserDesks";
 import {getUserServices} from "../core/requests/getUserServices";
+import {getUserDesksWithProposals} from "../core/requests/getUserDesksWithProposals";
+import {useMemo} from "react";
+import {IDesk, IService} from "../core/constants/types";
 
 export const WorkspacePage = () => {
   const navigate = useNavigate();
@@ -17,13 +20,43 @@ export const WorkspacePage = () => {
     queryKey: ["desks"],
     queryFn: getUserDesks,
   });
+  const {data: deskWithServices, isLoading: isDesksWithServicesLoading} =
+    useQuery({
+      queryKey: ["desksWithServices"],
+      queryFn: getUserDesksWithProposals,
+    });
+  const deskGridData = useMemo(() => {
+    const output: {[key in IDesk["id"]]: {desk: IDesk; proposals: IService[]}} =
+      {};
+    deskWithServices.content.forEach(
+      (item: {desk: IDesk; proposal: IService}) => {
+        if (output[item.desk.id]) {
+          output[item.desk.id].proposals.push(item.proposal);
+        } else {
+          output[item.desk.id] = {
+            desk: {...item.desk},
+            proposals: [item.proposal],
+          };
+        }
+      }
+    );
+    desks.content.forEach((item: {desk: IDesk}) => {
+      if (!output[item.desk.id]) {
+        output[item.desk.id] = {
+          desk: {...item.desk},
+          proposals: [],
+        };
+      }
+    });
+    return output;
+  }, [deskWithServices.content, desks.content]);
 
   const handleLogout = () => {
     localStorage.removeItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL);
     navigate("/");
   };
 
-  if (isDesksLoading || isServicesLoading) {
+  if (isDesksLoading || isServicesLoading || isDesksWithServicesLoading) {
     return <div>Loading...</div>;
   }
 
@@ -81,7 +114,7 @@ export const WorkspacePage = () => {
             <ServicesList data={services.content} />
           </Grid>
           <Grid item xs={6} lg={8}>
-            <DesksGrid data={desks.content} />
+            <DesksGrid data={deskGridData} />
           </Grid>
         </Grid>
       </Box>
