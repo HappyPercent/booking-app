@@ -3,28 +3,18 @@ import {useNavigate} from "react-router-dom";
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStorage";
 import {ServicesList} from "./ServicesList";
 import {DesksGrid} from "./DesksGrid";
-import {useQuery} from "@tanstack/react-query";
-import {getUserDesks} from "../core/requests/getUserDesks";
-import {getUserServices} from "../core/requests/getUserServices";
-import {getUserDesksWithProposals} from "../core/requests/getUserDesksWithProposals";
 import {useMemo} from "react";
 import {IDesk, IService} from "../core/constants/types";
+import {useGetServices} from "../core/hooks/useGetServices";
+import {useGetDesks} from "../core/hooks/useGetDesks";
+import {useGetDesksWithServices} from "../core/hooks/useGetDesksWithServices";
 
 export const WorkspacePage = () => {
   const navigate = useNavigate();
-  const {data: services, isLoading: isServicesLoading} = useQuery({
-    queryKey: ["services"],
-    queryFn: getUserServices,
-  });
-  const {data: desks, isLoading: isDesksLoading} = useQuery({
-    queryKey: ["desks"],
-    queryFn: getUserDesks,
-  });
+  const {data: services, isLoading: isServicesLoading} = useGetServices();
+  const {data: desks, isLoading: isDesksLoading} = useGetDesks();
   const {data: deskWithServices, isLoading: isDesksWithServicesLoading} =
-    useQuery({
-      queryKey: ["desksWithServices"],
-      queryFn: getUserDesksWithProposals,
-    });
+    useGetDesksWithServices();
   const deskGridData = useMemo(() => {
     const output: {[key in IDesk["id"]]: {desk: IDesk; proposals: IService[]}} =
       {};
@@ -111,7 +101,7 @@ export const WorkspacePage = () => {
               borderRight: 1,
             }}
           >
-            <ServicesList data={services.content} />
+            <ServicesList data={services?.content} />
           </Grid>
           <Grid item xs={6} lg={8}>
             <DesksGrid data={deskGridData} />

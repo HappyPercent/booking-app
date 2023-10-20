@@ -1,4 +1,5 @@
 export interface IService {
+  id?: number;
   name: string;
   category: string;
   shortDescr: string;

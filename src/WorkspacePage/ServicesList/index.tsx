@@ -13,7 +13,7 @@ import {NewServiceDialog} from "./NewServiceDialog";
 import {useState} from "react";
 import {IService} from "../../core/constants/types";
 
-export const ServicesList = ({data = []}: {data: IService[]}) => {
+export const ServicesList = ({data = []}: {data: IService[] | undefined}) => {
   const [open, setOpen] = useState(false);
   return (
     <>
