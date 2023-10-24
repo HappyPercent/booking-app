@@ -1,14 +1,18 @@
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../constants/localStorage";
 import {BASE_ROUTE} from "../constants/requestRoutes";
 
-export const createDesk = (desk: {
-  countryId: number;
-  cityId: number;
-  name: string;
-}) => {
-  const url = new URL(`${BASE_ROUTE}/desk`);
-  url.searchParams.append("countryId", String(desk.countryId));
-  url.searchParams.append("cityId", String(desk.cityId));
+export const createSlotsForDesk = (
+  deskId: number,
+  slots: {
+    dayOfWeek?: string;
+    date?: string;
+    dateTimeStart: string;
+    dateTimeEnd: string;
+    type?: string;
+  }[]
+) => {
+  const url = new URL(`${BASE_ROUTE}/slot`);
+  url.searchParams.append("deskId", String(deskId));
   const user = JSON.parse(
     localStorage.getItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL) || ""
   );
@@ -18,6 +22,6 @@ export const createDesk = (desk: {
       "Content-Type": "application/json",
       Authorization: `Basic ${btoa(`${user.username}:${user.password}` || "")}`,
     },
-    body: JSON.stringify({name: desk.name}),
-  }).then((res) => res.text());
+    body: JSON.stringify(slots),
+  });
 };

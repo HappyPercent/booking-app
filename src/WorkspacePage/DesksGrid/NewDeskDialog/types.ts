@@ -5,7 +5,7 @@ export interface INewDeskFormValues {
   country: (ICountry & {label: string}) | null;
   city: (ICity & {label: string}) | null;
   schedule: {
-    workingDays: string[];
+    workingDays: number[];
     workingPeriod: {
       from: Date;
       to: Date;

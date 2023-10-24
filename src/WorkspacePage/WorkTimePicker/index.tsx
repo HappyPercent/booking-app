@@ -13,7 +13,7 @@ export const WorkTimePicker = ({
   value: INewDeskFormValues["schedule"];
   onChange: (values: INewDeskFormValues["schedule"]) => void;
 }) => {
-  const handleChipClick = (day: string) => {
+  const handleChipClick = (day: number) => {
     const newSchedule = {...value};
     if (newSchedule.workingDays.includes(day)) {
       newSchedule.workingDays = newSchedule.workingDays.filter(
@@ -65,12 +65,14 @@ export const WorkTimePicker = ({
             flexWrap: "wrap",
           }}
         >
-          {WEEKDAYS.map((day) => (
+          {Object.entries(WEEKDAYS).map(([key, {label}]) => (
             <Chip
-              onClick={() => handleChipClick(day)}
-              key={day}
-              label={day}
-              variant={value.workingDays.includes(day) ? "filled" : "outlined"}
+              onClick={() => handleChipClick(Number(key))}
+              key={key}
+              label={label}
+              variant={
+                value.workingDays.includes(Number(key)) ? "filled" : "outlined"
+              }
               clickable
               color="primary"
             />
@@ -109,14 +111,14 @@ export const WorkTimePicker = ({
           </Grid>
           <Grid item xs={6}>
             <TimePicker
-              timezone="UTC"
+              timezone="system"
               value={value.workingHours.from}
               onChange={(value) => handleTimeChange(value, "from")}
             />
           </Grid>
           <Grid item xs={6}>
             <TimePicker
-              timezone="UTC"
+              timezone="system"
               value={value.workingHours.to}
               onChange={(value) => handleTimeChange(value, "to")}
             />

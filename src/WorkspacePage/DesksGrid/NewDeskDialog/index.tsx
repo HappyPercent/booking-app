@@ -22,6 +22,8 @@ import {DEFAULT_WORKING_DAYS} from "../../constants";
 import startOfToday from "date-fns/startOfToday";
 import addWeeks from "date-fns/addWeeks";
 import {INewDeskFormValues} from "./types";
+import {transformDeskDataForRequest} from "./helpers/transformDeskDataForRequest";
+import {createSlotsForDesk} from "../../../core/requests/createSlotsForDesk";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -34,7 +36,7 @@ const initialValues = {
   country: null,
   city: null,
   schedule: {
-    workingDays: DEFAULT_WORKING_DAYS,
+    workingDays: Object.keys(DEFAULT_WORKING_DAYS).map((day) => Number(day)),
     workingPeriod: {
       from: startOfToday(),
       to: addWeeks(startOfToday(), 2),
@@ -56,8 +58,22 @@ export const NewDeskDialog = ({
 }) => {
   const queryClient = useQueryClient();
   const {mutate} = useMutation(
-    (values: {countryId: number; cityId: number; name: string}) =>
-      createDesk(values),
+    async (values: {
+      name: string;
+      cityId: number;
+      countryId: number;
+      schedule: {
+        dateTimeStart: string;
+        dateTimeEnd: string;
+      }[];
+    }) => {
+      const response = await createDesk({
+        name: values.name,
+        cityId: values.cityId,
+        countryId: values.countryId,
+      });
+      await createSlotsForDesk(Number(response), values.schedule);
+    },
     {
       onSuccess: () => {
         onClose();
@@ -83,12 +99,10 @@ export const NewDeskDialog = ({
   );
   const handleSubmit = (values: INewDeskFormValues) => {
     if (values.city?.id && values.country?.id) {
-      const data = {
-        name: values.name,
-        cityId: values.city.id,
-        countryId: values.country.id,
-      };
-      mutate(data);
+      const data = transformDeskDataForRequest(values);
+      if (data) {
+        mutate(data);
+      }
     }
   };
 
