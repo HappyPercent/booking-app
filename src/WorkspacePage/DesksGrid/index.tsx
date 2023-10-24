@@ -74,7 +74,7 @@ const LinkProposalButton = ({
   const avaliableServices = useMemo(
     () =>
       data?.content.filter(
-        ({id}) => !services.find((service) => service.id === id)
+        ({id}) => !services.find((service) => service?.id === id)
       ),
     [data?.content, services]
   );
@@ -83,7 +83,7 @@ const LinkProposalButton = ({
     {
       onSuccess: () => {
         setIsLinking(false);
-        queryClient.invalidateQueries(["desksWithServices"]);
+        queryClient.invalidateQueries(["desks"]);
       },
     }
   );

@@ -15,6 +15,8 @@ import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {AreYouPage} from "./AreYouPage";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
+import uk from "date-fns/locale/en-GB";
+
 const queryClient = new QueryClient();
 const defaultTheme = createTheme();
 
@@ -67,7 +69,7 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={uk}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={defaultTheme}>
           <RouterProvider router={router} />

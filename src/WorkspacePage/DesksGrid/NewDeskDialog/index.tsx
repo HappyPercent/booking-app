@@ -11,11 +11,17 @@ import {
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Formik} from "formik";
 import * as Yup from "yup";
-import {getAllCountries} from "../../core/requests/getAllCountries";
+import {getAllCountries} from "../../../core/requests/getAllCountries";
 import {useMemo} from "react";
-import {getCityByCountry} from "../../core/requests/getCityByCountry";
-import {ICity, ICountry} from "../../core/constants/types";
-import {createDesk} from "../../core/requests/createDesk";
+import {getCityByCountry} from "../../../core/requests/getCityByCountry";
+import {ICity, ICountry} from "../../../core/constants/types";
+import {createDesk} from "../../../core/requests/createDesk";
+
+import {WorkTimePicker} from "../../WorkTimePicker";
+import {DEFAULT_WORKING_DAYS} from "../../constants";
+import startOfToday from "date-fns/startOfToday";
+import addWeeks from "date-fns/addWeeks";
+import {INewDeskFormValues} from "./types";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -27,11 +33,19 @@ const initialValues = {
   name: "",
   country: null,
   city: null,
-} as {
-  name: string;
-  country: (ICountry & {label: string}) | null;
-  city: (ICity & {label: string}) | null;
-};
+  schedule: {
+    workingDays: DEFAULT_WORKING_DAYS,
+    workingPeriod: {
+      from: startOfToday(),
+      to: addWeeks(startOfToday(), 2),
+    },
+    workingHours: {
+      from: new Date("2023-03-27T09:00:00"),
+      to: new Date("2023-03-27T18:00:00"),
+    },
+    detail: false,
+  },
+} as INewDeskFormValues;
 
 export const NewDeskDialog = ({
   open,
@@ -67,7 +81,7 @@ export const NewDeskDialog = ({
       })) || [],
     [countries]
   );
-  const handleSubmit = (values: typeof initialValues) => {
+  const handleSubmit = (values: INewDeskFormValues) => {
     if (values.city?.id && values.country?.id) {
       const data = {
         name: values.name,
@@ -79,7 +93,7 @@ export const NewDeskDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth={"xl"}>
       <DialogTitle>New desk</DialogTitle>
       <Formik
         initialValues={initialValues}
@@ -134,6 +148,12 @@ export const NewDeskDialog = ({
                   setFieldValue("city", value);
                 }}
                 error={!!touched.city && !!errors.city}
+              />
+              <WorkTimePicker
+                value={values.schedule}
+                onChange={(schedule: typeof initialValues.schedule) =>
+                  setFieldValue("schedule", schedule)
+                }
               />
             </Stack>
             <DialogActions

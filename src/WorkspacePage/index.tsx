@@ -7,46 +7,33 @@ import {useMemo} from "react";
 import {IDesk, IService} from "../core/constants/types";
 import {useGetServices} from "../core/hooks/useGetServices";
 import {useGetDesks} from "../core/hooks/useGetDesks";
-import {useGetDesksWithServices} from "../core/hooks/useGetDesksWithServices";
 
 export const WorkspacePage = () => {
   const navigate = useNavigate();
   const {data: services, isLoading: isServicesLoading} = useGetServices();
   const {data: desks, isLoading: isDesksLoading} = useGetDesks();
-  const {data: deskWithServices, isLoading: isDesksWithServicesLoading} =
-    useGetDesksWithServices();
   const deskGridData = useMemo(() => {
     const output: {[key in IDesk["id"]]: {desk: IDesk; proposals: IService[]}} =
       {};
-    deskWithServices.content.forEach(
-      (item: {desk: IDesk; proposal: IService}) => {
-        if (output[item.desk.id]) {
-          output[item.desk.id].proposals.push(item.proposal);
-        } else {
-          output[item.desk.id] = {
-            desk: {...item.desk},
-            proposals: [item.proposal],
-          };
-        }
-      }
-    );
-    desks.content.forEach((item: {desk: IDesk}) => {
-      if (!output[item.desk.id]) {
+    desks?.content.forEach((item: {desk: IDesk; proposal: IService}) => {
+      if (output[item.desk.id]) {
+        output[item.desk.id].proposals.push(item.proposal);
+      } else {
         output[item.desk.id] = {
           desk: {...item.desk},
-          proposals: [],
+          proposals: [item.proposal],
         };
       }
     });
     return output;
-  }, [deskWithServices.content, desks.content]);
+  }, [desks?.content]);
 
   const handleLogout = () => {
     localStorage.removeItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL);
     navigate("/");
   };
 
-  if (isDesksLoading || isServicesLoading || isDesksWithServicesLoading) {
+  if (isDesksLoading || isServicesLoading) {
     return <div>Loading...</div>;
   }
 
@@ -103,7 +90,14 @@ export const WorkspacePage = () => {
           >
             <ServicesList data={services?.content} />
           </Grid>
-          <Grid item xs={6} lg={8}>
+          <Grid
+            sx={{
+              paddingBottom: 2,
+            }}
+            item
+            xs={6}
+            lg={8}
+          >
             <DesksGrid data={deskGridData} />
           </Grid>
         </Grid>
