@@ -93,10 +93,11 @@ export const WorkspacePage = () => {
           <Grid
             sx={{
               paddingBottom: 2,
+              overflow: "auto",
             }}
             item
             xs={6}
-            lg={8}
+            lg={10}
           >
             <DesksGrid data={deskGridData} />
           </Grid>

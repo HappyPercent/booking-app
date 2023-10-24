@@ -22,7 +22,7 @@ import {DEFAULT_WORKING_DAYS} from "../../constants";
 import startOfToday from "date-fns/startOfToday";
 import addWeeks from "date-fns/addWeeks";
 import {INewDeskFormValues} from "./types";
-import {transformDeskDataForRequest} from "./helpers/transformDeskDataForRequest";
+import {getSlots} from "./helpers/getSlots";
 import {createSlotsForDesk} from "../../../core/requests/createSlotsForDesk";
 
 const schema = Yup.object().shape({
@@ -99,8 +99,13 @@ export const NewDeskDialog = ({
   );
   const handleSubmit = (values: INewDeskFormValues) => {
     if (values.city?.id && values.country?.id) {
-      const data = transformDeskDataForRequest(values);
-      if (data) {
+      const data = {
+        name: values.name,
+        cityId: values.city.id,
+        countryId: values.country.id,
+        schedule: getSlots(values.schedule),
+      };
+      if (data.schedule) {
         mutate(data);
       }
     }

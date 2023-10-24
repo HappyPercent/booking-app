@@ -5,4 +5,5 @@ export const useGetDesks = () =>
   useQuery({
     queryKey: ["desks"],
     queryFn: getUserDesks,
+    cacheTime: 10000,
   });

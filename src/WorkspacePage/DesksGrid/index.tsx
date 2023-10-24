@@ -29,9 +29,10 @@ export const DesksGrid = ({
         direction={"row"}
         spacing={1}
         divider={<Divider orientation="vertical" flexItem />}
+        display={"-webkit-box"}
       >
         {Object.values(data).map((item) => (
-          <Stack spacing={1} divider={<Divider />}>
+          <Stack spacing={1} divider={<Divider />} sx={{minWidth: "123px"}}>
             <Typography variant="h6">{item.desk.name}</Typography>
             {!!item.proposals?.length && (
               <List>

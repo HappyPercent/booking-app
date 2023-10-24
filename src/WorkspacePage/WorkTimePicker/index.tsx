@@ -1,10 +1,14 @@
-import {Box, Chip, Grid, Typography} from "@mui/material";
+import {Box, Button, Chip, Grid, Typography} from "@mui/material";
 import {WEEKDAYS} from "../constants";
 import {TimePicker} from "@mui/x-date-pickers/TimePicker";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import {DatePicker} from "@mui/x-date-pickers";
 import {INewDeskFormValues} from "../DesksGrid/NewDeskDialog/types";
+import {getSlots} from "../DesksGrid/NewDeskDialog/helpers/getSlots";
+import interactionPlugin from "@fullcalendar/interaction";
+import {DateSelectArg} from "@fullcalendar/core";
+import addMinutes from "date-fns/addMinutes";
 
 export const WorkTimePicker = ({
   value,
@@ -33,14 +37,51 @@ export const WorkTimePicker = ({
     onChange({...value, workingPeriod: {...value.workingPeriod, [type]: date}});
   };
 
+  const handleShowDetails = () => {
+    const events = getSlots(value).map(({dateTimeEnd, dateTimeStart}) => ({
+      start: dateTimeStart,
+      end: dateTimeEnd,
+      startStr: dateTimeStart,
+      endStr: dateTimeEnd,
+      title: "Working time",
+    }));
+    onChange({...value, detail: true, events});
+  };
+
+  const handleSelect = (selectInfo: DateSelectArg) => {
+    let calendarApi = selectInfo.view.calendar;
+    calendarApi.unselect();
+    calendarApi.addEvent({
+      start: selectInfo.startStr,
+      end: addMinutes(new Date(selectInfo.startStr), 15).toISOString(),
+      title: "Working time",
+    });
+  };
+
   if (value.detail) {
     return (
       <FullCalendar
+        forceEventDuration={true}
+        eventsSet={(events) => {
+          onChange({...value, events});
+        }}
+        eventClick={(event) => event.event.remove()}
+        select={handleSelect}
+        initialEvents={value.events}
         slotDuration={"00:15:00"}
-        plugins={[timeGridPlugin]}
+        plugins={[timeGridPlugin, interactionPlugin]}
         allDaySlot={false}
-        dayHeaderFormat={{weekday: "long"}}
-        headerToolbar={false}
+        editable={true}
+        selectable={true}
+        eventContent={() => (
+          <div
+            style={{
+              backgroundColor: "primary.main",
+              borderRadius: 1,
+              padding: 1,
+            }}
+          ></div>
+        )}
       />
     );
   }
@@ -125,6 +166,7 @@ export const WorkTimePicker = ({
           </Grid>
         </Grid>
       </Grid>
+      <Button onClick={handleShowDetails}>Detailed settings</Button>
     </Grid>
   );
 };
