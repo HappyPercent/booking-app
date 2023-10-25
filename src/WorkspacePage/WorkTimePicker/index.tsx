@@ -8,7 +8,6 @@ import {INewDeskFormValues} from "../DesksGrid/NewDeskDialog/types";
 import {getSlots} from "../DesksGrid/NewDeskDialog/helpers/getSlots";
 import interactionPlugin from "@fullcalendar/interaction";
 import {DateSelectArg} from "@fullcalendar/core";
-import addMinutes from "date-fns/addMinutes";
 
 export const WorkTimePicker = ({
   value,
@@ -53,7 +52,7 @@ export const WorkTimePicker = ({
     calendarApi.unselect();
     calendarApi.addEvent({
       start: selectInfo.startStr,
-      end: addMinutes(new Date(selectInfo.startStr), 15).toISOString(),
+      end: selectInfo.endStr,
       title: "Working time",
     });
   };
@@ -73,6 +72,8 @@ export const WorkTimePicker = ({
         allDaySlot={false}
         editable={true}
         selectable={true}
+        selectOverlap={false}
+        eventOverlap={false}
         eventContent={() => (
           <div
             style={{

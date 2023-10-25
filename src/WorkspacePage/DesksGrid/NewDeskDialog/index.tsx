@@ -106,7 +106,7 @@ export const NewDeskDialog = ({
         schedule: getSlots(values.schedule),
       };
       if (data.schedule) {
-        mutate(data);
+        // mutate(data);
       }
     }
   };

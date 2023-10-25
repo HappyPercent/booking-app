@@ -7,15 +7,39 @@ import getMinutes from "date-fns/getMinutes";
 import getHours from "date-fns/getHours";
 import addMinutes from "date-fns/addMinutes";
 import getDay from "date-fns/getDay";
+import differenceInMinutes from "date-fns/differenceInMinutes";
 
 export const getSlots = (data: INewDeskFormValues["schedule"]) => {
-  if (data.events?.length) {
-    return data.events.map((event) => ({
-      dateTimeStart: event.startStr,
-      dateTimeEnd: event.endStr,
-    }));
-  }
   const output = [] as {dateTimeStart: string; dateTimeEnd: string}[];
+  if (data.events?.length) {
+    data.events.forEach((event) => {
+      const diff = differenceInMinutes(
+        new Date(event.endStr),
+        new Date(event.startStr)
+      );
+      if (diff > 15) {
+        for (let index = 0; index < diff / 15; index++) {
+          output.push({
+            dateTimeStart: addMinutes(
+              new Date(event.startStr),
+              index * 15
+            ).toISOString(),
+            dateTimeEnd: addMinutes(
+              new Date(event.startStr),
+              (index + 1) * 15
+            ).toISOString(),
+          });
+        }
+      } else {
+        output.push({
+          dateTimeStart: new Date(event.startStr).toISOString(),
+          dateTimeEnd: new Date(event.endStr).toISOString(),
+        });
+      }
+    });
+    return output;
+  }
+
   const resetDate = createResetFunction(data.workingHours);
   let dateTime = setMinutes(
     setHours(
@@ -26,7 +50,7 @@ export const getSlots = (data: INewDeskFormValues["schedule"]) => {
   );
   const dateTimeEnd = setMinutes(
     setHours(startOfDay(data.workingPeriod.to), getHours(data.workingHours.to)),
-    getMinutes(data.workingHours.from)
+    getMinutes(data.workingHours.to)
   );
   while (true) {
     if (dateTime > dateTimeEnd) {
