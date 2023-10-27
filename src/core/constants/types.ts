@@ -35,3 +35,12 @@ export interface ICity {
   name: string;
   country: ICountry;
 }
+
+export interface ISlot {
+  id: number;
+  type: string;
+  dateTimeStart: string;
+  dateTimeEnd: string;
+  durationMinutes: number;
+  desk: IDesk;
+}

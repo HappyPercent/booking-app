@@ -3,12 +3,14 @@ import {useNavigate} from "react-router-dom";
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStorage";
 import {ServicesList} from "./ServicesList";
 import {DesksGrid} from "./DesksGrid";
-import {useMemo} from "react";
+import {useMemo, useState} from "react";
 import {IDesk, IService} from "../core/constants/types";
 import {useGetServices} from "../core/hooks/useGetServices";
 import {useGetDesks} from "../core/hooks/useGetDesks";
+import {CurrentSchedule} from "./CurrentSchedule";
 
 export const WorkspacePage = () => {
+  const [selectedDesk, setSelectedDesk] = useState<number | null>(null); // [1
   const navigate = useNavigate();
   const {data: services, isLoading: isServicesLoading} = useGetServices();
   const {data: desks, isLoading: isDesksLoading} = useGetDesks();
@@ -48,6 +50,7 @@ export const WorkspacePage = () => {
         flexDirection: "row",
         alignItems: "center",
         alignContent: "center",
+        pb: 4,
       }}
     >
       <AppBar position="fixed" color="transparent" sx={{boxShadow: "none"}}>
@@ -99,8 +102,17 @@ export const WorkspacePage = () => {
             xs={6}
             lg={10}
           >
-            <DesksGrid data={deskGridData} />
+            <DesksGrid
+              data={deskGridData}
+              onDeskClick={setSelectedDesk}
+              selectedDesk={selectedDesk}
+            />
           </Grid>
+          {!!selectedDesk && (
+            <Grid item xs={12}>
+              <CurrentSchedule deskId={selectedDesk} />
+            </Grid>
+          )}
         </Grid>
       </Box>
     </Container>

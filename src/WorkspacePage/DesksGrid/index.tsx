@@ -17,8 +17,12 @@ import {linkProposalToDesk} from "../../core/requests/linkProposalToDesk";
 
 export const DesksGrid = ({
   data = [],
+  onDeskClick,
+  selectedDesk,
 }: {
   data: {[key in IDesk["id"]]: {desk: IDesk; proposals: IService[]}};
+  onDeskClick: (deskId: number) => void;
+  selectedDesk: number | null;
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -33,7 +37,14 @@ export const DesksGrid = ({
       >
         {Object.values(data).map((item) => (
           <Stack spacing={1} divider={<Divider />} sx={{minWidth: "123px"}}>
-            <Typography variant="h6">{item.desk.name}</Typography>
+            <Typography
+              style={{cursor: "pointer"}}
+              color={item.desk.id === selectedDesk ? "primary" : ""}
+              variant="h6"
+              onClick={() => onDeskClick(item.desk.id)}
+            >
+              {item.desk.name}
+            </Typography>
             {!!item.proposals?.length && (
               <List>
                 {item.proposals?.map((proposal) => (

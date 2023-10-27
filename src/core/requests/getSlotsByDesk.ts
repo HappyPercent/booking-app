@@ -1,9 +1,10 @@
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../constants/localStorage";
 import {BASE_ROUTE} from "../constants/requestRoutes";
-import {IDesk, IService} from "../constants/types";
+import {ISlot} from "../constants/types";
 
-export const getUserDesks = () => {
-  const url = new URL(`${BASE_ROUTE}/desk/all`);
+export const getSlotsByDesk = (deskId: number) => {
+  const url = new URL(`${BASE_ROUTE}/slot`);
+  url.searchParams.append("deskId", String(deskId));
   url.searchParams.append("page", "0");
   url.searchParams.append("size", "500");
   const user = JSON.parse(
@@ -15,8 +16,5 @@ export const getUserDesks = () => {
       "Content-Type": "application/json",
       Authorization: `Basic ${btoa(`${user.username}:${user.password}` || "")}`,
     },
-  }).then(
-    (response) =>
-      response.json() as Promise<{content: {desk: IDesk; proposal: IService}[]}>
-  );
+  }).then((response) => response.json() as Promise<{content: ISlot[]}>);
 };

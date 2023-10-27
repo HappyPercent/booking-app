@@ -2,11 +2,11 @@ import {Box, Button, Chip, Grid, Typography} from "@mui/material";
 import {WEEKDAYS} from "../constants";
 import {TimePicker} from "@mui/x-date-pickers/TimePicker";
 import FullCalendar from "@fullcalendar/react";
-import timeGridPlugin from "@fullcalendar/timegrid";
 import {DatePicker} from "@mui/x-date-pickers";
 import {INewDeskFormValues} from "../DesksGrid/NewDeskDialog/types";
 import {getSlots} from "../DesksGrid/NewDeskDialog/helpers/getSlots";
 import interactionPlugin from "@fullcalendar/interaction";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import {DateSelectArg} from "@fullcalendar/core";
 
 export const WorkTimePicker = ({
