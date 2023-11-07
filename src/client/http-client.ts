@@ -1,5 +1,6 @@
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStorage";
 import {BASE_ROUTE} from "../core/constants/requestRoutes";
+import {useCoreStore} from "../core/store";
 import {routesList} from "../routes/routesList";
 
 export type QueryParamsType = Record<string | number, any>;
@@ -171,8 +172,10 @@ export class HttpClient<SecurityDataType = unknown> {
     const user = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL) || "{}"
     );
+    const lang = useCoreStore.getState().userSettings.lang || "en-GB";
     const headers = {
       Authorization: `Basic ${btoa(`${user.username}:${user.password}` || "")}`,
+      "Accept-Language": lang,
     };
 
     return this.customFetch(
