@@ -16,6 +16,7 @@ import {AreYouPage} from "./AreYouPage";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 import uk from "date-fns/locale/en-GB";
+import {Layout} from "./Layout";
 
 const queryClient = new QueryClient();
 const defaultTheme = createTheme();
@@ -43,27 +44,33 @@ const existentUserLoader = () => {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AreYouPage />,
-    loader: existentUserLoader,
-  },
-  {
-    path: "/workspace",
-    element: <WorkspacePage />,
-    loader: noUserLoader,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-    loader: existentUserLoader,
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-    loader: existentUserLoader,
-  },
-  {
-    path: "*",
-    element: <Navigate to="/login" replace />,
+    element: <Layout />,
+    children: [
+      {
+        path: "",
+        element: <AreYouPage />,
+        loader: existentUserLoader,
+      },
+      {
+        path: "workspace",
+        element: <WorkspacePage />,
+        loader: noUserLoader,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+        loader: existentUserLoader,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
+        loader: existentUserLoader,
+      },
+      {
+        path: "*",
+        element: <Navigate to="/login" replace />,
+      },
+    ],
   },
 ]);
 
