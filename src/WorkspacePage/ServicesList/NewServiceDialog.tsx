@@ -10,7 +10,7 @@ import {
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {Formik} from "formik";
 import * as Yup from "yup";
-import {createService} from "../../core/requests/createService";
+import api from "../../client/api";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -38,7 +38,7 @@ export const NewServiceDialog = ({
   onClose: () => void;
 }) => {
   const queryClient = useQueryClient();
-  const {mutate: addService} = useMutation(createService, {
+  const {mutate: addService} = useMutation(api.createService, {
     onSuccess: () => {
       queryClient.invalidateQueries(["services"]);
       onClose();

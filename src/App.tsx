@@ -8,7 +8,10 @@ import {
 import {LoginPage} from "./LoginPage";
 import {ThemeProvider, createTheme} from "@mui/material";
 import {RegisterPage} from "./RegisterPage";
-import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "./core/constants/localStorage";
+import {
+  LOCAL_STORAGE_USER_CREDENTIALS_LABEL,
+  LOCAL_STORAGE_USER_SETTINGS_LABEL,
+} from "./core/constants/localStorage";
 import {WorkspacePage} from "./WorkspacePage";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
@@ -17,16 +20,29 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 import uk from "date-fns/locale/en-GB";
 import {Layout} from "./Layout";
+import {routesList} from "./routes/routesList";
+import {useCoreStore} from "./core/store";
 
 const queryClient = new QueryClient();
 const defaultTheme = createTheme();
+
+useCoreStore.subscribe(
+  (state) => state.userSettings.lang,
+  (value) => {
+    localStorage.setItem(
+      LOCAL_STORAGE_USER_SETTINGS_LABEL,
+      JSON.stringify({lang: value})
+    );
+    window.location.reload();
+  }
+);
 
 const noUserLoader = () => {
   const credentials = JSON.parse(
     localStorage.getItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL) || "{}"
   );
   if (!credentials.username || !credentials.password) {
-    return redirect("/login");
+    return redirect(routesList.LOGIN);
   }
   return null;
 };
@@ -36,39 +52,39 @@ const existentUserLoader = () => {
     localStorage.getItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL) || "{}"
   );
   if (credentials.username && credentials.password) {
-    return redirect("/workspace");
+    return redirect(routesList.WORKSPACE);
   }
   return null;
 };
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: routesList.BASE,
     element: <Layout />,
     children: [
       {
-        path: "",
+        path: routesList.BASE,
         element: <AreYouPage />,
         loader: existentUserLoader,
       },
       {
-        path: "workspace",
+        path: routesList.WORKSPACE,
         element: <WorkspacePage />,
         loader: noUserLoader,
       },
       {
-        path: "login",
+        path: routesList.LOGIN,
         element: <LoginPage />,
         loader: existentUserLoader,
       },
       {
-        path: "register",
+        path: routesList.REGISTER,
         element: <RegisterPage />,
         loader: existentUserLoader,
       },
       {
         path: "*",
-        element: <Navigate to="/login" replace />,
+        element: <Navigate to={routesList.LOGIN} replace />,
       },
     ],
   },

@@ -13,7 +13,7 @@ import {useMemo, useState} from "react";
 import {NewDeskDialog} from "./NewDeskDialog";
 import {useGetServices} from "../../core/hooks/useGetServices";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {linkProposalToDesk} from "../../core/requests/linkProposalToDesk";
+import api from "../../client/api";
 
 export const DesksGrid = ({
   data = [],
@@ -91,7 +91,7 @@ const LinkProposalButton = ({
     [data?.content, services]
   );
   const {mutate} = useMutation(
-    (proposalId: number) => linkProposalToDesk(proposalId, deskId),
+    (proposalId: number) => api.linkProposalToDesk(proposalId, deskId),
     {
       onSuccess: () => {
         setIsLinking(false);

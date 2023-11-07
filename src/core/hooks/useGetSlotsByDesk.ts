@@ -1,9 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
-import {getSlotsByDesk} from "../requests/getSlotsByDesk";
+import api from "../../client/api";
 
 export const useGetSlotsByDesk = (deskId: number) =>
   useQuery({
     queryKey: ["slotsWithDesks", deskId],
-    queryFn: () => getSlotsByDesk(deskId),
-    cacheTime: 0,
+    queryFn: async () => (await api.getSlotsByDesk(deskId)).data,
   });

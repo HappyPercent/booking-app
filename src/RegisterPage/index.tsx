@@ -10,9 +10,9 @@ import {useNavigate} from "react-router-dom";
 import {Formik, FormikHelpers} from "formik";
 import * as Yup from "yup";
 import {FormValues} from "./types";
-import {createUser} from "../core/requests/createUser";
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStorage";
 import {useMutation} from "@tanstack/react-query";
+import api from "../client/api";
 
 const schema = Yup.object().shape({
   username: Yup.string().email("Invalid email").required("Required"),
@@ -24,7 +24,7 @@ const schema = Yup.object().shape({
 export const RegisterPage = () => {
   const navigate = useNavigate();
   const {mutateAsync: register} = useMutation(
-    (values: FormValues) => createUser(values),
+    (values: FormValues) => api.createUser(values),
     {
       onSuccess: (_, values) => {
         localStorage.setItem(

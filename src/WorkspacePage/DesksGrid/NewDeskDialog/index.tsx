@@ -11,11 +11,8 @@ import {
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Formik} from "formik";
 import * as Yup from "yup";
-import {getAllCountries} from "../../../core/requests/getAllCountries";
 import {useMemo} from "react";
-import {getCityByCountry} from "../../../core/requests/getCityByCountry";
 import {ICity, ICountry} from "../../../core/constants/types";
-import {createDesk} from "../../../core/requests/createDesk";
 
 import {WorkTimePicker} from "../../WorkTimePicker";
 import {DEFAULT_WORKING_DAYS} from "../../constants";
@@ -23,7 +20,7 @@ import startOfToday from "date-fns/startOfToday";
 import addWeeks from "date-fns/addWeeks";
 import {INewDeskFormValues} from "./types";
 import {getSlots} from "./helpers/getSlots";
-import {createSlotsForDesk} from "../../../core/requests/createSlotsForDesk";
+import api from "../../../client/api";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -67,12 +64,10 @@ export const NewDeskDialog = ({
         dateTimeEnd: string;
       }[];
     }) => {
-      const response = await createDesk({
+      const response = await api.createDesk(values.countryId, values.cityId, {
         name: values.name,
-        cityId: values.cityId,
-        countryId: values.countryId,
       });
-      await createSlotsForDesk(Number(response), values.schedule);
+      await api.createSlotsForDesk(Number(response), values.schedule);
     },
     {
       onSuccess: () => {
@@ -83,7 +78,7 @@ export const NewDeskDialog = ({
   );
   const {data: countries} = useQuery<{content: ICountry[]}>(
     ["countries"],
-    getAllCountries,
+    async () => (await api.getAllCountries()).data,
     {
       enabled: open,
     }
@@ -209,7 +204,7 @@ const CitySelect = ({
 }) => {
   const {data: cities, isFetching} = useQuery<{content: ICity[]}>(
     ["citiesByCountry", countryId],
-    () => getCityByCountry(String(countryId)),
+    async () => (await api.getCityByCountry(String(countryId))).data,
     {
       enabled: !!countryId,
     }

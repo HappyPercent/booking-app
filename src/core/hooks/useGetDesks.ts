@@ -1,9 +1,12 @@
 import {useQuery} from "@tanstack/react-query";
-import {getUserDesks} from "../requests/getUserDesks";
+import api from "../../client/api";
 
 export const useGetDesks = () =>
   useQuery({
     queryKey: ["desks"],
-    queryFn: getUserDesks,
-    cacheTime: 10000,
+    queryFn: async () => {
+      const data = await api.getUserDesks();
+      return data.data;
+    },
+    refetchOnWindowFocus: false,
   });

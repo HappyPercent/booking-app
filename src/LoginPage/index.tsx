@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import {FormValues} from "./types";
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStorage";
 import {useMutation} from "@tanstack/react-query";
-import {loginUser} from "../core/requests/loginUser";
+import api from "../client/api";
 
 const schema = Yup.object().shape({
   username: Yup.string().email("Invalid email").required("Required"),
@@ -24,7 +24,7 @@ const schema = Yup.object().shape({
 export const LoginPage = () => {
   const navigate = useNavigate();
   const {mutateAsync: login} = useMutation(
-    (values: FormValues) => loginUser(values),
+    (values: FormValues) => api.loginUser(values),
     {
       onSuccess: (_, values) => {
         localStorage.setItem(

@@ -17,8 +17,8 @@ export const Layout = () => {
   const location = useLocation();
   const [userExists, setUserExists] = useState<boolean>(false);
   const userLang = useCoreStore((state) => state.userSettings.lang);
-  console.log("userSettings: ", userLang);
   const setLanguage = useCoreStore((state) => state.setLanguage);
+
   useEffect(() => {
     setUserExists(() => {
       const credentials = JSON.parse(
@@ -61,7 +61,9 @@ export const Layout = () => {
             onChange={(e) => setLanguage(e.target.value as string)}
           >
             {LANGUAGES.map((language) => (
-              <MenuItem value={language.name}>{language.label}</MenuItem>
+              <MenuItem key={language.name} value={language.name}>
+                {language.label}
+              </MenuItem>
             ))}
           </Select>
           {userExists && (

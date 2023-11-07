@@ -18,14 +18,3 @@ export const useCoreStore = create(
       })),
   }))
 );
-
-useCoreStore.subscribe(
-  (state) => state.userSettings.lang,
-  (value) => {
-    localStorage.setItem(
-      LOCAL_STORAGE_USER_SETTINGS_LABEL,
-      JSON.stringify({lang: value})
-    );
-    window.location.reload();
-  }
-);
