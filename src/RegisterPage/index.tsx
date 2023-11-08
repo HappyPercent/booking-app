@@ -13,6 +13,8 @@ import {FormValues} from "./types";
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStorage";
 import {useMutation} from "@tanstack/react-query";
 import api from "../client/api";
+import {useTranslation} from "react-i18next";
+import {routesList} from "../routes/routesList";
 
 const schema = Yup.object().shape({
   username: Yup.string().email("Invalid email").required("Required"),
@@ -22,6 +24,7 @@ const schema = Yup.object().shape({
 });
 
 export const RegisterPage = () => {
+  const {t} = useTranslation();
   const navigate = useNavigate();
   const {mutateAsync: register} = useMutation(
     (values: FormValues) => api.createUser(values),
@@ -31,12 +34,10 @@ export const RegisterPage = () => {
           LOCAL_STORAGE_USER_CREDENTIALS_LABEL,
           JSON.stringify(values)
         );
-        navigate("/workspace");
+        navigate(routesList.WORKSPACE);
       },
       onError: (error) => {
-        window.alert(
-          "Something went wrong. Please try again. Error code - " + error
-        );
+        window.alert(error);
       },
     }
   );
@@ -73,7 +74,7 @@ export const RegisterPage = () => {
             }}
           >
             <Typography component="h1" variant="h5">
-              Sign up
+              {t("Sign up")}
             </Typography>
             <Box
               component="form"
@@ -86,7 +87,7 @@ export const RegisterPage = () => {
                 required
                 fullWidth
                 id="username"
-                label="Email Address"
+                label={t("Email Address")}
                 name="username"
                 autoComplete="email"
                 value={values.username}
@@ -99,7 +100,7 @@ export const RegisterPage = () => {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label={t("Password")}
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -115,7 +116,7 @@ export const RegisterPage = () => {
                 variant="contained"
                 sx={{mt: 3, mb: 2}}
               >
-                Register
+                {t("Sign up")}
               </Button>
               <Link
                 sx={{
@@ -124,7 +125,7 @@ export const RegisterPage = () => {
                 onClick={() => navigate("/login")}
                 variant="body2"
               >
-                Already registered? Sign in
+                {t("Already registered")}? {t("Sign in")}
               </Link>
             </Box>
           </Box>

@@ -6,8 +6,10 @@ import {IDesk, IService} from "../core/constants/types";
 import {useGetServices} from "../core/hooks/useGetServices";
 import {useGetDesks} from "../core/hooks/useGetDesks";
 import {CurrentSchedule} from "./CurrentSchedule";
+import {useTranslation} from "react-i18next";
 
 export const WorkspacePage = () => {
+  const {t} = useTranslation();
   const [selectedDesk, setSelectedDesk] = useState<number | null>(null); // [1
   const {data: services, isLoading: isServicesLoading} = useGetServices();
   const {data: desks, isLoading: isDesksLoading} = useGetDesks();
@@ -28,7 +30,7 @@ export const WorkspacePage = () => {
   }, [desks?.content]);
 
   if (isDesksLoading || isServicesLoading) {
-    return <div>Loading...</div>;
+    return <div>{t("Loading")}...</div>;
   }
 
   return (

@@ -21,6 +21,7 @@ import addWeeks from "date-fns/addWeeks";
 import {INewDeskFormValues} from "./types";
 import {getSlots} from "./helpers/getSlots";
 import api from "../../../client/api";
+import {useTranslation} from "react-i18next";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -53,6 +54,7 @@ export const NewDeskDialog = ({
   open: boolean;
   onClose: () => void;
 }) => {
+  const {t} = useTranslation();
   const queryClient = useQueryClient();
   const {mutate} = useMutation(
     async (values: {
@@ -108,7 +110,7 @@ export const NewDeskDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth={"xl"}>
-      <DialogTitle>New desk</DialogTitle>
+      <DialogTitle>{t("New desk")}</DialogTitle>
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
@@ -129,7 +131,7 @@ export const NewDeskDialog = ({
           >
             <Stack direction={"column"} spacing={3}>
               <TextField
-                label="Name"
+                label={t("Name")}
                 onChange={handleChange}
                 value={values.name}
                 name="name"
@@ -147,15 +149,16 @@ export const NewDeskDialog = ({
                   option.id === value?.id
                 }
                 options={countriesOptions}
-                renderInput={(params) => (
+                renderInput={(params: any) => (
                   <TextField
                     {...params}
                     error={!!touched.country && !!errors.country}
-                    label="Country"
+                    label={t("Country")}
                   />
                 )}
               />
               <CitySelect
+                label={t("City")}
                 value={values.city}
                 countryId={values.country?.id}
                 onChange={(value) => {
@@ -175,13 +178,13 @@ export const NewDeskDialog = ({
                 marginTop: 2,
               }}
             >
-              <Button onClick={onClose}>Cancel</Button>
+              <Button onClick={onClose}>{t("Cancel")}</Button>
               <Button
                 onClick={() => handleSubmit()}
                 color="primary"
                 variant="contained"
               >
-                Create
+                {t("Create")}
               </Button>
             </DialogActions>
           </DialogContent>
@@ -192,11 +195,13 @@ export const NewDeskDialog = ({
 };
 
 const CitySelect = ({
+  label,
   countryId,
   value,
   onChange,
   error,
 }: {
+  label: string;
   countryId?: number;
   value: ICity | null;
   onChange: (value: ICity | null) => void;
@@ -226,8 +231,8 @@ const CitySelect = ({
       value={value}
       isOptionEqualToValue={(option, value) => option.id === value?.id}
       options={citiesOptions}
-      renderInput={(params) => (
-        <TextField {...params} error={error} label="City" />
+      renderInput={(params: any) => (
+        <TextField {...params} error={error} label={label} />
       )}
     />
   );

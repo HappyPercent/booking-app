@@ -8,6 +8,8 @@ import {getSlots} from "../DesksGrid/NewDeskDialog/helpers/getSlots";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import {DateSelectArg} from "@fullcalendar/core";
+import {useTranslation} from "react-i18next";
+import {useCoreStore} from "../../core/store";
 
 export const WorkTimePicker = ({
   value,
@@ -16,6 +18,8 @@ export const WorkTimePicker = ({
   value: INewDeskFormValues["schedule"];
   onChange: (values: INewDeskFormValues["schedule"]) => void;
 }) => {
+  const lang = useCoreStore((state) => state.userSettings.lang);
+  const {t} = useTranslation();
   const handleChipClick = (day: number) => {
     const newSchedule = {...value};
     if (newSchedule.workingDays.includes(day)) {
@@ -60,6 +64,10 @@ export const WorkTimePicker = ({
   if (value.detail) {
     return (
       <FullCalendar
+        buttonText={{
+          today: t("Today"),
+        }}
+        locale={lang}
         forceEventDuration={true}
         eventsSet={(events) => {
           onChange({...value, events});
@@ -90,13 +98,13 @@ export const WorkTimePicker = ({
   return (
     <Grid container spacing={2}>
       <Grid item xs={4}>
-        <Typography variant="h5">Working days</Typography>
+        <Typography variant="h5">{t("Working days")}</Typography>
       </Grid>
       <Grid item xs={4}>
-        <Typography variant="h5">Working period</Typography>
+        <Typography variant="h5">{t("Working period")}</Typography>
       </Grid>
       <Grid item xs={4}>
-        <Typography variant="h5">Working time</Typography>
+        <Typography variant="h5">{t("Working time")}</Typography>
       </Grid>
       <Grid item container xs={4}>
         <Box
@@ -124,10 +132,10 @@ export const WorkTimePicker = ({
       <Grid item xs={4}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Typography variant="h6">From</Typography>
+            <Typography variant="h6">{t("From")}</Typography>
           </Grid>
           <Grid item xs={6}>
-            <Typography variant="h6">To</Typography>
+            <Typography variant="h6">{t("To")}</Typography>
           </Grid>
           <Grid item xs={6}>
             <DatePicker
@@ -146,10 +154,10 @@ export const WorkTimePicker = ({
       <Grid item xs={4}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Typography variant="h6">From</Typography>
+            <Typography variant="h6">{t("From")}</Typography>
           </Grid>
           <Grid item xs={6}>
-            <Typography variant="h6">To</Typography>
+            <Typography variant="h6">{t("To")}</Typography>
           </Grid>
           <Grid item xs={6}>
             <TimePicker
@@ -167,7 +175,7 @@ export const WorkTimePicker = ({
           </Grid>
         </Grid>
       </Grid>
-      <Button onClick={handleShowDetails}>Detailed settings</Button>
+      <Button onClick={handleShowDetails}>{t("Detailed settings")}</Button>
     </Grid>
   );
 };

@@ -13,6 +13,7 @@ import {FormValues} from "./types";
 import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStorage";
 import {useMutation} from "@tanstack/react-query";
 import api from "../client/api";
+import {useTranslation} from "react-i18next";
 
 const schema = Yup.object().shape({
   username: Yup.string().email("Invalid email").required("Required"),
@@ -22,6 +23,7 @@ const schema = Yup.object().shape({
 });
 
 export const LoginPage = () => {
+  const {t} = useTranslation();
   const navigate = useNavigate();
   const {mutateAsync: login} = useMutation(
     (values: FormValues) => api.loginUser(values),
@@ -73,7 +75,7 @@ export const LoginPage = () => {
             }}
           >
             <Typography component="h1" variant="h5">
-              Sign in
+              {t("Sign in")}
             </Typography>
             <Box
               component="form"
@@ -86,7 +88,7 @@ export const LoginPage = () => {
                 required
                 fullWidth
                 id="username"
-                label="Email Address"
+                label={t("Email Address")}
                 name="username"
                 autoComplete="email"
                 autoFocus
@@ -100,7 +102,7 @@ export const LoginPage = () => {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label={t("Password")}
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -120,7 +122,7 @@ export const LoginPage = () => {
                 variant="contained"
                 sx={{mt: 3, mb: 2}}
               >
-                Sign In
+                {t("Sign in")}
               </Button>
 
               <Link
@@ -130,7 +132,7 @@ export const LoginPage = () => {
                 onClick={() => navigate("/register")}
                 variant="body2"
               >
-                Don't have an account? Sign Up
+                {t("Don't have an account")}? {t("Sign up")}
               </Link>
             </Box>
           </Box>

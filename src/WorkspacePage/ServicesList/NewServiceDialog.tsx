@@ -11,6 +11,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {Formik} from "formik";
 import * as Yup from "yup";
 import api from "../../client/api";
+import {useTranslation} from "react-i18next";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -37,6 +38,7 @@ export const NewServiceDialog = ({
   open: boolean;
   onClose: () => void;
 }) => {
+  const {t} = useTranslation();
   const queryClient = useQueryClient();
   const {mutate: addService} = useMutation(api.createService, {
     onSuccess: () => {
@@ -46,7 +48,7 @@ export const NewServiceDialog = ({
   });
   return (
     <Dialog open={open} fullWidth onClose={onClose}>
-      <DialogTitle>Create service</DialogTitle>
+      <DialogTitle>{t("Add service")}</DialogTitle>
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => addService(values)}
@@ -60,21 +62,21 @@ export const NewServiceDialog = ({
           >
             <Stack direction={"column"} spacing={3}>
               <TextField
-                label="Name"
+                label={t("Name")}
                 onChange={handleChange}
                 value={values.name}
                 name="name"
                 error={!!touched.name && !!errors.name}
               />
               <TextField
-                label="Category"
+                label={t("Category")}
                 onChange={handleChange}
                 value={values.category}
                 name="category"
                 error={!!touched.category && !!errors.category}
               />
               <TextField
-                label="Description"
+                label={t("Description")}
                 multiline
                 rows={3}
                 onChange={handleChange}
@@ -83,14 +85,14 @@ export const NewServiceDialog = ({
                 error={!!touched.descr && !!errors.descr}
               />
               <TextField
-                label="Short description"
+                label={t("Short description")}
                 onChange={handleChange}
                 value={values.shortDescr}
                 name="shortDescr"
                 error={!!touched.shortDescr && !!errors.shortDescr}
               />
               <TextField
-                label="Duration"
+                label={t("Duration")}
                 type="number"
                 onChange={handleChange}
                 value={values.duration}
@@ -98,7 +100,7 @@ export const NewServiceDialog = ({
                 error={!!touched.duration && !!errors.duration}
               />
               <TextField
-                label="Price"
+                label={t("Price")}
                 type="number"
                 onChange={handleChange}
                 value={values.price}
@@ -107,13 +109,13 @@ export const NewServiceDialog = ({
               />
             </Stack>
             <DialogActions>
-              <Button onClick={onClose}>Cancel</Button>
+              <Button onClick={onClose}>{t("Cancel")}</Button>
               <Button
                 onClick={() => handleSubmit()}
                 color="primary"
                 variant="contained"
               >
-                Create
+                {t("Create")}
               </Button>
             </DialogActions>
           </DialogContent>

@@ -12,13 +12,16 @@ import InfoIcon from "@mui/icons-material/Info";
 import {NewServiceDialog} from "./NewServiceDialog";
 import {useState} from "react";
 import {IService} from "../../core/constants/types";
+import {useTranslation} from "react-i18next";
 
 export const ServicesList = ({data = []}: {data: IService[] | undefined}) => {
   const [open, setOpen] = useState(false);
+  const {t} = useTranslation();
+
   return (
     <>
       <NewServiceDialog open={open} onClose={() => setOpen(false)} />
-      <List subheader={<Typography variant="h6">Services</Typography>}>
+      <List subheader={<Typography variant="h6">{t("Services")}</Typography>}>
         {data.map((service) => (
           <ServiceListItem data={service} />
         ))}
@@ -31,7 +34,7 @@ export const ServicesList = ({data = []}: {data: IService[] | undefined}) => {
           onClick={() => setOpen(true)}
           endIcon={<AddIcon />}
         >
-          Add service
+          {t("Add service")}
         </Button>
       </List>
     </>
@@ -39,6 +42,7 @@ export const ServicesList = ({data = []}: {data: IService[] | undefined}) => {
 };
 
 const ServiceListItem = ({data}: {data: IService}) => {
+  const {t} = useTranslation();
   return (
     <ListItem
       secondaryAction={
@@ -46,19 +50,19 @@ const ServiceListItem = ({data}: {data: IService}) => {
           title={
             <Stack direction="column" spacing={0}>
               <Stack direction={"row"} spacing={1}>
-                <Typography variant={"body2"}>Description:</Typography>
+                <Typography variant={"body2"}>{t("Description")}:</Typography>
                 <Typography variant={"body2"}>{data.shortDescr}</Typography>
               </Stack>
               <Stack direction={"row"} spacing={1}>
-                <Typography variant={"body2"}>Duration:</Typography>
+                <Typography variant={"body2"}>{t("Duration")}:</Typography>
                 <Typography variant={"body2"}>{data.duration}</Typography>
               </Stack>
               <Stack direction={"row"} spacing={1}>
-                <Typography variant={"body2"}>Price:</Typography>
+                <Typography variant={"body2"}>{t("Price")}:</Typography>
                 <Typography variant={"body2"}>{data.price}</Typography>
               </Stack>
               <Stack direction={"row"} spacing={1}>
-                <Typography variant={"body2"}>Category:</Typography>
+                <Typography variant={"body2"}>{t("Category")}:</Typography>
                 <Typography variant={"body2"}>{data.category}</Typography>
               </Stack>
             </Stack>

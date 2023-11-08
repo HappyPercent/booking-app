@@ -14,6 +14,7 @@ import {NewDeskDialog} from "./NewDeskDialog";
 import {useGetServices} from "../../core/hooks/useGetServices";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import api from "../../client/api";
+import {useTranslation} from "react-i18next";
 
 export const DesksGrid = ({
   data = [],
@@ -25,6 +26,7 @@ export const DesksGrid = ({
   selectedDesk: number | null;
 }) => {
   const [open, setOpen] = useState(false);
+  const {t} = useTranslation();
 
   return (
     <>
@@ -66,7 +68,7 @@ export const DesksGrid = ({
           variant="contained"
           onClick={() => setOpen(true)}
         >
-          New desk
+          {t("New desk")}
         </Button>
       </Stack>
     </>
@@ -99,6 +101,7 @@ const LinkProposalButton = ({
       },
     }
   );
+  const {t} = useTranslation();
 
   const handleClick = (serviceId: number | undefined) => {
     if (serviceId) {
@@ -125,7 +128,7 @@ const LinkProposalButton = ({
       size="small"
       disabled={!avaliableServices?.length}
     >
-      Link proposal
+      {t("Link proposal")}
     </Button>
   );
 };

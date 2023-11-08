@@ -1,7 +1,9 @@
 import {Chip, Container} from "@mui/material";
+import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
 
 export const AreYouPage = () => {
+  const {t} = useTranslation();
   const navigate = useNavigate();
   return (
     <Container
@@ -26,7 +28,7 @@ export const AreYouPage = () => {
         color="primary"
         clickable
         onClick={() => navigate("/login")}
-        label={"I provide service"}
+        label={t("I provide service")}
       />
       <Chip
         sx={{
@@ -37,7 +39,7 @@ export const AreYouPage = () => {
         color="primary"
         clickable
         onClick={() => navigate("/find-service")}
-        label={"I look for service"}
+        label={t("I look for service")}
       />
     </Container>
   );

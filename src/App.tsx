@@ -23,6 +23,9 @@ import {Layout} from "./Layout";
 import {routesList} from "./routes/routesList";
 import {useCoreStore} from "./core/store";
 
+//i18n always last
+import i18n from "./i18n";
+
 const queryClient = new QueryClient();
 const defaultTheme = createTheme();
 
@@ -33,6 +36,7 @@ useCoreStore.subscribe(
       LOCAL_STORAGE_USER_SETTINGS_LABEL,
       JSON.stringify({lang: value})
     );
+    i18n.changeLanguage(value);
     window.location.reload();
   }
 );

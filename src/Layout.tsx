@@ -11,8 +11,10 @@ import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "./core/constants/localStorag
 import {useEffect, useState} from "react";
 import {useCoreStore} from "./core/store";
 import {LANGUAGES} from "./core/constants/languages";
+import {useTranslation} from "react-i18next";
 
 export const Layout = () => {
+  const {t} = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [userExists, setUserExists] = useState<boolean>(false);
@@ -68,7 +70,7 @@ export const Layout = () => {
           </Select>
           {userExists && (
             <Button color="inherit" onClick={handleLogout}>
-              Logout
+              {t("Logout")}
             </Button>
           )}
         </Toolbar>
