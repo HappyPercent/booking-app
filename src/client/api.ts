@@ -1,4 +1,11 @@
-import {ICity, ICountry, IDesk, IService, ISlot} from "../core/constants/types";
+import {
+  ICategory,
+  ICity,
+  ICountry,
+  IDesk,
+  IService,
+  ISlot,
+} from "../core/constants/types";
 import {HttpClient, RequestParams} from "./http-client";
 
 class Api extends HttpClient {
@@ -36,7 +43,7 @@ class Api extends HttpClient {
   createService = (
     data: {
       name: string;
-      category: string;
+      categoryId: string;
       shortDescr: string;
       descr: string;
       duration: number;
@@ -45,7 +52,7 @@ class Api extends HttpClient {
     params: RequestParams = {}
   ) =>
     this.request<string, any>({
-      path: `/prposal`,
+      path: `/proposal`,
       method: "POST",
       body: data,
       ...params,
@@ -152,6 +159,30 @@ class Api extends HttpClient {
       query: {
         proposalId: String(proposalId),
         deskId: String(deskId),
+      },
+      ...params,
+    });
+
+  getCategoryRootAll = (params: RequestParams = {}) =>
+    this.request<{content: ICategory[]}, any>({
+      path: `/category/root`,
+      method: "GET",
+      query: {
+        size: 500,
+      },
+      ...params,
+    });
+
+  getCategoryChildByRootId = (
+    rootCategoryId: string,
+    params: RequestParams = {}
+  ) =>
+    this.request<{content: ICategory[]}, any>({
+      path: `/category/child`,
+      method: "GET",
+      query: {
+        rootCategoryId,
+        size: 500,
       },
       ...params,
     });

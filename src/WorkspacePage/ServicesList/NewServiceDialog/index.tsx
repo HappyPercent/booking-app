@@ -4,48 +4,54 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
 } from "@mui/material";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Formik} from "formik";
 import * as Yup from "yup";
-import api from "../../client/api";
+import api from "../../../client/api";
 import {useTranslation} from "react-i18next";
+import {useGetCategories} from "../../../core/hooks/useGetCategories";
+import {INewServiceDialogProps, ISubcategorySelectProps} from "./types";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
-  category: Yup.string().required("Required"),
+  categoryGroupId: Yup.string().required("Required"),
+  categoryId: Yup.string().required("Required"),
   shortDescr: Yup.string(),
-  descr: Yup.string().typeError("Must be a string"),
-  duration: Yup.number().required("Required"),
-  price: Yup.number().required("Required"),
+  descr: Yup.string(),
+  duration: Yup.number().required("Required").min(15, "Min duration - 15 min"),
+  price: Yup.number().required("Required").min(1),
 });
 
 const initialValues = {
   name: "",
-  category: "",
+  categoryGroupId: "",
+  categoryId: "",
   shortDescr: "",
   descr: "",
   duration: 0,
   price: 0,
 };
 
-export const NewServiceDialog = ({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) => {
+export const NewServiceDialog = ({open, onClose}: INewServiceDialogProps) => {
+  const {data: categories} = useGetCategories();
   const {t} = useTranslation();
   const queryClient = useQueryClient();
   const {mutate: addService} = useMutation(api.createService, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries(["services"]);
-      onClose();
+      if (data.ok) {
+        onClose();
+      }
     },
   });
+
   return (
     <Dialog open={open} fullWidth onClose={onClose}>
       <DialogTitle>{t("Add service")}</DialogTitle>
@@ -54,7 +60,14 @@ export const NewServiceDialog = ({
         onSubmit={(values) => addService(values)}
         validationSchema={schema}
       >
-        {({values, handleChange, touched, errors, handleSubmit}) => (
+        {({
+          values,
+          handleChange,
+          touched,
+          errors,
+          handleSubmit,
+          setFieldValue,
+        }) => (
           <DialogContent
             sx={{
               overflow: "visible",
@@ -68,12 +81,30 @@ export const NewServiceDialog = ({
                 name="name"
                 error={!!touched.name && !!errors.name}
               />
-              <TextField
-                label={t("Category")}
+              <FormControl
+                error={!!touched.categoryGroupId && !!errors.categoryGroupId}
+              >
+                <InputLabel>{t("Category")}</InputLabel>
+                <Select
+                  label={t("Category")}
+                  onChange={(e) => {
+                    setFieldValue("categoryGroupId", e.target.value);
+                    setFieldValue("categoryId", "");
+                  }}
+                  value={values.categoryGroupId}
+                  name="categoryGroupId"
+                  error={!!touched.categoryGroupId && !!errors.categoryGroupId}
+                >
+                  {categories?.content.map((category) => (
+                    <MenuItem value={category.id}>{category.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <SubcategorySelect
+                categoryId={values.categoryGroupId}
                 onChange={handleChange}
-                value={values.category}
-                name="category"
-                error={!!touched.category && !!errors.category}
+                value={values.categoryId}
+                error={!!touched.categoryId && !!errors.categoryId}
               />
               <TextField
                 label={t("Description")}
@@ -122,5 +153,39 @@ export const NewServiceDialog = ({
         )}
       </Formik>
     </Dialog>
+  );
+};
+
+const SubcategorySelect = ({
+  categoryId,
+  value,
+  onChange,
+  error,
+}: ISubcategorySelectProps) => {
+  const {t} = useTranslation();
+  const subcategories = useQuery(
+    ["subcategories", categoryId],
+    () => api.getCategoryChildByRootId(categoryId),
+    {
+      enabled: !!categoryId,
+    }
+  );
+  return (
+    <FormControl error={error}>
+      <InputLabel>{t("Subcategory")}</InputLabel>
+      <Select
+        label={t("Subcategory")}
+        onChange={onChange}
+        value={value}
+        name="categoryId"
+        error={error}
+      >
+        {subcategories.data?.data?.content.map((category) => (
+          <MenuItem key={category.id} value={category.id}>
+            {category.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };

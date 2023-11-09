@@ -44,3 +44,10 @@ export interface ISlot {
   durationMinutes: number;
   desk: IDesk;
 }
+
+export interface ICategory {
+  id: number;
+  name: string;
+  description?: string;
+  root?: ICategory;
+}

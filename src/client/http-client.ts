@@ -159,7 +159,7 @@ export class HttpClient<SecurityDataType = unknown> {
     body,
     secure,
     path,
-    type,
+    type = ContentType.Json,
     query,
     format = "json",
     baseUrl = BASE_ROUTE,

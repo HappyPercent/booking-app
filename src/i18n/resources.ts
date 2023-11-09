@@ -34,6 +34,7 @@ export const resources: Resource = {
       "Sign up": "Sign up",
       "Already registered": "Already registered",
       "Short description": "Short description",
+      Subcategory: "Subcategory",
     },
   },
   "sr-RS": {
@@ -69,6 +70,7 @@ export const resources: Resource = {
       "Sign up": "Региструј се",
       "Already registered": "Већ регистрован",
       "Short description": "Кратак опис",
+      Subcategory: "Подкатегорија",
     },
   },
 };
