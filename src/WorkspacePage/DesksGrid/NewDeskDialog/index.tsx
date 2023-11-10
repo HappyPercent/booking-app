@@ -66,10 +66,12 @@ export const NewDeskDialog = ({
         dateTimeEnd: string;
       }[];
     }) => {
-      const response = await api.createDesk(values.countryId, values.cityId, {
+      const response = await api.createDesk({
+        cityId: values.cityId,
+        countryId: values.countryId,
         name: values.name,
       });
-      await api.createSlotsForDesk(Number(response), values.schedule);
+      await api.createSlotsForDesk(Number(response.data), values.schedule);
     },
     {
       onSuccess: () => {

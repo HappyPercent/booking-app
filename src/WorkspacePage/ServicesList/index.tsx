@@ -23,7 +23,7 @@ export const ServicesList = ({data = []}: {data: IService[] | undefined}) => {
       <NewServiceDialog open={open} onClose={() => setOpen(false)} />
       <List subheader={<Typography variant="h6">{t("Services")}</Typography>}>
         {data.map((service) => (
-          <ServiceListItem data={service} />
+          <ServiceListItem key={service.id} data={service} />
         ))}
         <Button
           sx={{
@@ -63,7 +63,9 @@ const ServiceListItem = ({data}: {data: IService}) => {
               </Stack>
               <Stack direction={"row"} spacing={1}>
                 <Typography variant={"body2"}>{t("Category")}:</Typography>
-                <Typography variant={"body2"}>{data.category}</Typography>
+                <Typography variant={"body2"}>
+                  {data.category.description}
+                </Typography>
               </Stack>
             </Stack>
           }

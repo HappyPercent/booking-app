@@ -24,19 +24,14 @@ class Api extends HttpClient {
     });
 
   createDesk = (
-    countryId: number,
-    cityId: number,
-    data: {name: string},
+    data: {name: string; cityId: number; countryId: number},
     params: RequestParams = {}
   ) =>
     this.request<string, any>({
       path: `/desk`,
       method: "POST",
-      query: {
-        countryId: String(countryId),
-        cityId: String(cityId),
-      },
       body: data,
+      format: "text",
       ...params,
     });
 

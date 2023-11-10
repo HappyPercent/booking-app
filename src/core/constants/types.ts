@@ -1,7 +1,7 @@
 export interface IService {
   id?: number;
   name: string;
-  category: string;
+  category: ICategory;
   shortDescr: string;
   descr: string;
   duration: number;
