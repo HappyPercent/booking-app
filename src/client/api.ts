@@ -181,6 +181,21 @@ class Api extends HttpClient {
       },
       ...params,
     });
+
+  deleteProposalLink = (
+    proposalId: number,
+    deskId: number,
+    params: RequestParams = {}
+  ) =>
+    this.request<void, any>({
+      path: `/proposal/link`,
+      method: "DELETE",
+      query: {
+        proposalId,
+        deskId,
+      },
+      ...params,
+    });
 }
 
 const api = new Api();

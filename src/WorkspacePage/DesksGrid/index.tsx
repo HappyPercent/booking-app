@@ -1,6 +1,7 @@
 import {
   Button,
   Divider,
+  IconButton,
   List,
   ListItem,
   MenuItem,
@@ -15,6 +16,7 @@ import {useGetServices} from "../../core/hooks/useGetServices";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import api from "../../client/api";
 import {useTranslation} from "react-i18next";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const DesksGrid = ({
   data = [],
@@ -25,8 +27,15 @@ export const DesksGrid = ({
   onDeskClick: (deskId: number) => void;
   selectedDesk: number | null;
 }) => {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const {t} = useTranslation();
+
+  const {mutate: deleteServiceLink} = useMutation(
+    (data: {proposalId: number; deskId: number}) =>
+      api.deleteProposalLink(data.proposalId, data.deskId),
+    {onSuccess: () => queryClient.invalidateQueries(["desks"])}
+  );
 
   return (
     <>
@@ -50,7 +59,22 @@ export const DesksGrid = ({
             {!!item.proposals?.length && (
               <List>
                 {item.proposals?.map((proposal) => (
-                  <ListItem>{proposal?.name || ""}</ListItem>
+                  <ListItem
+                    secondaryAction={
+                      <IconButton
+                        onClick={() =>
+                          deleteServiceLink({
+                            proposalId: proposal.id,
+                            deskId: item.desk.id,
+                          })
+                        }
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    }
+                  >
+                    {proposal?.name || ""}
+                  </ListItem>
                 ))}
               </List>
             )}

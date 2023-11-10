@@ -22,7 +22,7 @@ export const WorkspacePage = () => {
       } else {
         output[item.desk.id] = {
           desk: {...item.desk},
-          proposals: [item.proposal],
+          proposals: item.proposal ? [item.proposal] : [],
         };
       }
     });
