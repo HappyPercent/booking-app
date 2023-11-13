@@ -21,11 +21,13 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
   body?: unknown;
   /** base url */
   baseUrl?: string;
+  /** should handle auth errors and check credentials */
+  auth?: boolean;
 }
 
 export type RequestParams = Omit<
   FullRequestParams,
-  "body" | "method" | "query" | "path"
+  "body" | "method" | "query" | "path" | "customErrorHandler"
 >;
 
 export interface ApiConfig<SecurityDataType = unknown> {
@@ -151,6 +153,7 @@ export class HttpClient<SecurityDataType = unknown> {
     const {status} = response;
 
     if (status === 401) {
+      localStorage.removeItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL);
       window.location.href = routesList.LOGIN;
     }
   };
@@ -163,6 +166,7 @@ export class HttpClient<SecurityDataType = unknown> {
     query,
     format = "json",
     baseUrl = BASE_ROUTE,
+    auth = false,
     ...params
   }: FullRequestParams): Promise<HttpResponse<T, E>> => {
     const requestParams = this.mergeRequestParams(params);
@@ -173,10 +177,14 @@ export class HttpClient<SecurityDataType = unknown> {
       localStorage.getItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL) || "{}"
     );
     const lang = useCoreStore.getState().userSettings.lang || "en-GB";
-    const headers = {
-      Authorization: `Basic ${btoa(`${user.username}:${user.password}` || "")}`,
+    const headers: HeadersInit = {
       "Accept-Language": lang,
     };
+    if (!auth) {
+      headers.Authorization = `Basic ${btoa(
+        `${user.username}:${user.password}` || ""
+      )}`;
+    }
 
     return this.customFetch(
       `${baseUrl || this.baseUrl || ""}${path}${
@@ -222,7 +230,7 @@ export class HttpClient<SecurityDataType = unknown> {
             });
 
       if (!response.ok) {
-        this.enqueueServerError(data);
+        !auth && this.enqueueServerError(data);
       }
       return data;
     });

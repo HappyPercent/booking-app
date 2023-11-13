@@ -29,12 +29,16 @@ export const RegisterPage = () => {
   const {mutateAsync: register} = useMutation(
     (values: FormValues) => api.createUser(values),
     {
-      onSuccess: (_, values) => {
-        localStorage.setItem(
-          LOCAL_STORAGE_USER_CREDENTIALS_LABEL,
-          JSON.stringify(values)
-        );
-        navigate(routesList.WORKSPACE);
+      onSuccess: (res, values) => {
+        if (res.ok) {
+          localStorage.setItem(
+            LOCAL_STORAGE_USER_CREDENTIALS_LABEL,
+            JSON.stringify(values)
+          );
+          navigate(routesList.WORKSPACE);
+        } else {
+          throw new Error(res.error);
+        }
       },
       onError: (error) => {
         window.alert(error);

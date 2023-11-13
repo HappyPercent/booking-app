@@ -12,7 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {Formik} from "formik";
+import {Formik, FormikErrors} from "formik";
 import * as Yup from "yup";
 import api from "../../../client/api";
 import {useTranslation} from "react-i18next";
@@ -25,8 +25,15 @@ const schema = Yup.object().shape({
   categoryId: Yup.string().required("Required"),
   shortDescr: Yup.string(),
   descr: Yup.string(),
-  duration: Yup.number().required("Required").min(15, "Min duration - 15 min"),
-  price: Yup.number().required("Required").min(1),
+  pricePack: Yup.array().of(
+    Yup.object().shape({
+      duration: Yup.number()
+        .required("Required")
+        .min(15, "Min duration - 15 min"),
+      price: Yup.number().required("Required").min(1),
+      currency: Yup.string().required("Required"),
+    })
+  ),
 });
 
 const initialValues = {
@@ -35,8 +42,13 @@ const initialValues = {
   categoryId: "",
   shortDescr: "",
   descr: "",
-  duration: 0,
-  price: 0,
+  pricePack: [
+    {
+      duration: 0,
+      price: 0,
+      currency: "",
+    },
+  ],
 };
 
 export const NewServiceDialog = ({open, onClose}: INewServiceDialogProps) => {
@@ -122,22 +134,43 @@ export const NewServiceDialog = ({open, onClose}: INewServiceDialogProps) => {
                 name="shortDescr"
                 error={!!touched.shortDescr && !!errors.shortDescr}
               />
-              <TextField
-                label={t("Duration")}
-                type="number"
-                onChange={handleChange}
-                value={values.duration}
-                name="duration"
-                error={!!touched.duration && !!errors.duration}
-              />
-              <TextField
-                label={t("Price")}
-                type="number"
-                onChange={handleChange}
-                value={values.price}
-                name="price"
-                error={!!touched.price && !!errors.price}
-              />
+              {values.pricePack.map((pricePack, index) => (
+                <>
+                  <InputLabel>
+                    {t("Price pack")} {index + 1}
+                  </InputLabel>
+                  <TextField
+                    label={t("Duration")}
+                    type="number"
+                    onChange={handleChange}
+                    value={pricePack.duration}
+                    name={`pricePack.${index}.duration`}
+                    error={
+                      !!touched.pricePack?.[index].duration &&
+                      !!(
+                        errors.pricePack?.[index] as FormikErrors<{
+                          duration: number;
+                        }>
+                      ).duration
+                    }
+                  />
+                  <TextField
+                    label={t("Price")}
+                    type="number"
+                    onChange={handleChange}
+                    value={pricePack.price}
+                    name="price"
+                    error={
+                      !!touched.pricePack?.[index].price &&
+                      !!(
+                        errors.pricePack?.[index] as FormikErrors<{
+                          price: number;
+                        }>
+                      ).price
+                    }
+                  />
+                </>
+              ))}
             </Stack>
             <DialogActions>
               <Button onClick={onClose}>{t("Cancel")}</Button>

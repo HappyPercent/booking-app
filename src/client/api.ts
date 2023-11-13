@@ -20,6 +20,8 @@ class Api extends HttpClient {
       path: `/user/login`,
       method: "POST",
       body: data,
+      auth: true,
+      format: "text",
       ...params,
     });
 
@@ -41,8 +43,7 @@ class Api extends HttpClient {
       categoryId: string;
       shortDescr: string;
       descr: string;
-      duration: number;
-      price: number;
+      pricePack: {duration: number; price: number; currency: string}[];
     },
     params: RequestParams = {}
   ) =>
@@ -85,6 +86,8 @@ class Api extends HttpClient {
       path: `/user/register`,
       method: "POST",
       body: data,
+      auth: true,
+      format: "text",
       ...params,
     });
 

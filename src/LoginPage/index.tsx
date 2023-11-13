@@ -14,6 +14,7 @@ import {LOCAL_STORAGE_USER_CREDENTIALS_LABEL} from "../core/constants/localStora
 import {useMutation} from "@tanstack/react-query";
 import api from "../client/api";
 import {useTranslation} from "react-i18next";
+import {routesList} from "../routes/routesList";
 
 const schema = Yup.object().shape({
   username: Yup.string().email("Invalid email").required("Required"),
@@ -28,12 +29,16 @@ export const LoginPage = () => {
   const {mutateAsync: login} = useMutation(
     (values: FormValues) => api.loginUser(values),
     {
-      onSuccess: (_, values) => {
-        localStorage.setItem(
-          LOCAL_STORAGE_USER_CREDENTIALS_LABEL,
-          JSON.stringify(values)
-        );
-        navigate("/workspace");
+      onSuccess: (res, values) => {
+        if (res.ok) {
+          localStorage.setItem(
+            LOCAL_STORAGE_USER_CREDENTIALS_LABEL,
+            JSON.stringify(values)
+          );
+          navigate(routesList.WORKSPACE);
+        } else {
+          throw new Error(res.error);
+        }
       },
       onError: (error) => {
         window.alert(
