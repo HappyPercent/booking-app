@@ -4,12 +4,13 @@ import {TimePicker} from "@mui/x-date-pickers/TimePicker";
 import FullCalendar from "@fullcalendar/react";
 import {DatePicker} from "@mui/x-date-pickers";
 import {INewDeskFormValues} from "../DesksGrid/NewDeskDialog/types";
-import {getSlots} from "../DesksGrid/NewDeskDialog/helpers/getSlots";
+import {getEvents} from "./helpers/getEvents";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import {DateSelectArg} from "@fullcalendar/core";
 import {useTranslation} from "react-i18next";
 import {useCoreStore} from "../../core/store";
+import {endOfDay} from "date-fns";
 
 export const WorkTimePicker = ({
   value,
@@ -19,6 +20,7 @@ export const WorkTimePicker = ({
   onChange: (values: INewDeskFormValues["schedule"]) => void;
 }) => {
   const lang = useCoreStore((state) => state.userSettings.lang);
+  console.log("value: ", value);
   const {t} = useTranslation();
   const handleChipClick = (day: number) => {
     const newSchedule = {...value};
@@ -41,13 +43,7 @@ export const WorkTimePicker = ({
   };
 
   const handleShowDetails = () => {
-    const events = getSlots(value).map(({dateTimeEnd, dateTimeStart}) => ({
-      start: dateTimeStart,
-      end: dateTimeEnd,
-      startStr: dateTimeStart,
-      endStr: dateTimeEnd,
-      title: "Working time",
-    }));
+    const events = getEvents(value);
     onChange({...value, detail: true, events});
   };
 
@@ -56,7 +52,12 @@ export const WorkTimePicker = ({
     calendarApi.unselect();
     calendarApi.addEvent({
       start: selectInfo.startStr,
-      end: selectInfo.endStr,
+      end: new Date(
+        Math.min(
+          Number(new Date(selectInfo.endStr)),
+          Number(endOfDay(new Date(selectInfo.startStr)))
+        )
+      ).toISOString(),
       title: "Working time",
     });
   };

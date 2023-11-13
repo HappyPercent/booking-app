@@ -19,7 +19,6 @@ import {DEFAULT_WORKING_DAYS} from "../../constants";
 import startOfToday from "date-fns/startOfToday";
 import addWeeks from "date-fns/addWeeks";
 import {INewDeskFormValues} from "./types";
-import {getSlots} from "./helpers/getSlots";
 import api from "../../../client/api";
 import {useTranslation} from "react-i18next";
 
@@ -34,7 +33,7 @@ const initialValues = {
   country: null,
   city: null,
   schedule: {
-    workingDays: Object.keys(DEFAULT_WORKING_DAYS).map((day) => Number(day)),
+    workingDays: Object.values(DEFAULT_WORKING_DAYS).map((day) => Number(day)),
     workingPeriod: {
       from: startOfToday(),
       to: addWeeks(startOfToday(), 2),
@@ -102,7 +101,10 @@ export const NewDeskDialog = ({
         name: values.name,
         cityId: values.city.id,
         countryId: values.country.id,
-        schedule: getSlots(values.schedule),
+        schedule: values.schedule.events.map((event) => ({
+          dateTimeStart: new Date(event.startStr).toISOString(),
+          dateTimeEnd: new Date(event.endStr).toISOString(),
+        })),
       };
       if (data.schedule) {
         mutate(data);

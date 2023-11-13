@@ -4,8 +4,13 @@ export interface IService {
   category: ICategory;
   shortDescr: string;
   descr: string;
+  pricePack?: IPricePack[];
+}
+
+export interface IPricePack {
   duration: number;
   price: number;
+  currency: string;
 }
 
 export interface IDesk {

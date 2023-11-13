@@ -53,20 +53,20 @@ const ServiceListItem = ({data}: {data: IService}) => {
                 <Typography variant={"body2"}>{t("Description")}:</Typography>
                 <Typography variant={"body2"}>{data.shortDescr}</Typography>
               </Stack>
-              <Stack direction={"row"} spacing={1}>
+              {/* <Stack direction={"row"} spacing={1}>
                 <Typography variant={"body2"}>{t("Duration")}:</Typography>
                 <Typography variant={"body2"}>{data.duration}</Typography>
               </Stack>
               <Stack direction={"row"} spacing={1}>
                 <Typography variant={"body2"}>{t("Price")}:</Typography>
                 <Typography variant={"body2"}>{data.price}</Typography>
-              </Stack>
-              <Stack direction={"row"} spacing={1}>
+              </Stack> */}
+              {/* <Stack direction={"row"} spacing={1}>
                 <Typography variant={"body2"}>{t("Category")}:</Typography>
                 <Typography variant={"body2"}>
                   {data.category.description}
                 </Typography>
-              </Stack>
+              </Stack> */}
             </Stack>
           }
           placement="right"
