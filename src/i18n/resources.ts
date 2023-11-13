@@ -35,6 +35,8 @@ export const resources: Resource = {
       "Already registered": "Already registered",
       "Short description": "Short description",
       Subcategory: "Subcategory",
+      "Add pack": "Add pack",
+      "Price pack": "Price pack",
     },
   },
   "sr-RS": {
@@ -71,6 +73,8 @@ export const resources: Resource = {
       "Already registered": "Већ регистрован",
       "Short description": "Кратак опис",
       Subcategory: "Подкатегорија",
+      "Add pack": "Додај пакет",
+      "Price pack": "Цена пакета",
     },
   },
 };

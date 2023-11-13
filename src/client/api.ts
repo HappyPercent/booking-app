@@ -199,6 +199,13 @@ class Api extends HttpClient {
       },
       ...params,
     });
+
+  getCurrencyAll = (params: RequestParams = {}) =>
+    this.request<{code: string}[], any>({
+      path: `/currency`,
+      method: "GET",
+      ...params,
+    });
 }
 
 const api = new Api();

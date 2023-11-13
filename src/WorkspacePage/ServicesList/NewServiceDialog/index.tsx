@@ -17,7 +17,13 @@ import * as Yup from "yup";
 import api from "../../../client/api";
 import {useTranslation} from "react-i18next";
 import {useGetCategories} from "../../../core/hooks/useGetCategories";
-import {INewServiceDialogProps, ISubcategorySelectProps} from "./types";
+import {
+  INewServiceDialogProps,
+  INewServiceFormData,
+  ISubcategorySelectProps,
+} from "./types";
+import AddIcon from "@mui/icons-material/Add";
+import {useCurrencyAll} from "../../../core/hooks/useCurrencyAll";
 
 const schema = Yup.object().shape({
   name: Yup.string().required("Required"),
@@ -31,12 +37,16 @@ const schema = Yup.object().shape({
         .required("Required")
         .min(15, "Min duration - 15 min"),
       price: Yup.number().required("Required").min(1),
-      currency: Yup.string().required("Required"),
+      currency: Yup.object()
+        .shape({
+          code: Yup.string().required("Required"),
+        })
+        .required("Required"),
     })
   ),
 });
 
-const initialValues = {
+const initialValues: INewServiceFormData = {
   name: "",
   categoryGroupId: "",
   categoryId: "",
@@ -46,7 +56,7 @@ const initialValues = {
     {
       duration: 0,
       price: 0,
-      currency: "",
+      currency: {code: ""},
     },
   ],
 };
@@ -63,13 +73,24 @@ export const NewServiceDialog = ({open, onClose}: INewServiceDialogProps) => {
       }
     },
   });
+  const {data: currency} = useCurrencyAll();
+
+  const handleSubmit = (values: INewServiceFormData) => {
+    addService({
+      ...values,
+      pricePack: values.pricePack.map((pack) => ({
+        ...pack,
+        currency: pack.currency?.code || "USD",
+      })),
+    });
+  };
 
   return (
     <Dialog open={open} fullWidth onClose={onClose}>
       <DialogTitle>{t("Add service")}</DialogTitle>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values) => addService(values)}
+        onSubmit={handleSubmit}
         validationSchema={schema}
       >
         {({
@@ -146,12 +167,12 @@ export const NewServiceDialog = ({open, onClose}: INewServiceDialogProps) => {
                     value={pricePack.duration}
                     name={`pricePack.${index}.duration`}
                     error={
-                      !!touched.pricePack?.[index].duration &&
+                      !!touched.pricePack?.[index]?.duration &&
                       !!(
                         errors.pricePack?.[index] as FormikErrors<{
                           duration: number;
                         }>
-                      ).duration
+                      )?.duration
                     }
                   />
                   <TextField
@@ -159,18 +180,61 @@ export const NewServiceDialog = ({open, onClose}: INewServiceDialogProps) => {
                     type="number"
                     onChange={handleChange}
                     value={pricePack.price}
-                    name="price"
+                    name={`pricePack.${index}.price`}
                     error={
-                      !!touched.pricePack?.[index].price &&
+                      !!touched.pricePack?.[index]?.price &&
                       !!(
                         errors.pricePack?.[index] as FormikErrors<{
                           price: number;
                         }>
-                      ).price
+                      )?.price
                     }
                   />
+                  <FormControl
+                    error={
+                      !!touched.pricePack?.[index]?.currency &&
+                      !!(
+                        errors.pricePack?.[index] as FormikErrors<{
+                          currency: number;
+                        }>
+                      )?.currency
+                    }
+                  >
+                    <Select
+                      value={pricePack.currency?.code}
+                      onChange={handleChange}
+                      name={`pricePack.${index}.currency.code`}
+                      error={
+                        !!touched.pricePack?.[index].currency &&
+                        !!(
+                          errors.pricePack?.[index] as FormikErrors<{
+                            currency: number;
+                          }>
+                        )?.currency
+                      }
+                    >
+                      {currency?.data?.map((currency) => (
+                        <MenuItem key={currency.code} value={currency.code}>
+                          {currency.code}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </>
               ))}
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() =>
+                  setFieldValue("pricePack", [
+                    ...values.pricePack,
+                    {duration: 0, price: 0, currency: {code: ""}},
+                  ])
+                }
+                endIcon={<AddIcon />}
+              >
+                {t("Add pack")}
+              </Button>
             </Stack>
             <DialogActions>
               <Button onClick={onClose}>{t("Cancel")}</Button>
