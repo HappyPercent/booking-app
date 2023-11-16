@@ -37,6 +37,8 @@ export const resources: Resource = {
       Subcategory: "Subcategory",
       "Add pack": "Add pack",
       "Price pack": "Price pack",
+      Breaks: "Breaks",
+      "Add break": "Add break",
     },
   },
   "sr-RS": {
@@ -75,6 +77,8 @@ export const resources: Resource = {
       Subcategory: "Подкатегорија",
       "Add pack": "Додај пакет",
       "Price pack": "Цена пакета",
+      Breaks: "Паузе",
+      "Add break": "Додај паузу",
     },
   },
 };

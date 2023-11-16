@@ -42,6 +42,7 @@ const initialValues = {
       from: new Date("2023-03-27T09:00:00"),
       to: new Date("2023-03-27T18:00:00"),
     },
+    breaks: [],
     detail: false,
   },
 } as INewDeskFormValues;
@@ -96,12 +97,12 @@ export const NewDeskDialog = ({
     [countries]
   );
   const handleSubmit = (values: INewDeskFormValues) => {
-    if (values.city?.id && values.country?.id) {
+    if (values.city?.id && values.country?.id && !!values.schedule.events) {
       const data = {
         name: values.name,
         cityId: values.city.id,
         countryId: values.country.id,
-        schedule: values.schedule.events.map((event) => ({
+        schedule: values.schedule.events?.map((event) => ({
           dateTimeStart: new Date(event.startStr).toISOString(),
           dateTimeEnd: new Date(event.endStr).toISOString(),
         })),

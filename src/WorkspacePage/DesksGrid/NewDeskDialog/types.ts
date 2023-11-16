@@ -14,7 +14,8 @@ export interface INewDeskFormValues {
       from: Date;
       to: Date;
     };
+    breaks: {from: Date | null; to: Date | null}[];
     detail: boolean;
-    events: {startStr: string; endStr: string}[];
+    events?: {startStr: string; endStr: string}[];
   };
 }

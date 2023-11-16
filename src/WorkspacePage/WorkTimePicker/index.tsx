@@ -1,4 +1,4 @@
-import {Box, Button, Chip, Grid, Typography} from "@mui/material";
+import {Box, Button, Chip, Grid, IconButton, Typography} from "@mui/material";
 import {WEEKDAYS} from "../constants";
 import {TimePicker} from "@mui/x-date-pickers/TimePicker";
 import FullCalendar from "@fullcalendar/react";
@@ -11,6 +11,8 @@ import {DateSelectArg} from "@fullcalendar/core";
 import {useTranslation} from "react-i18next";
 import {useCoreStore} from "../../core/store";
 import {endOfDay} from "date-fns";
+import {produce} from "immer";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const WorkTimePicker = ({
   value,
@@ -20,7 +22,6 @@ export const WorkTimePicker = ({
   onChange: (values: INewDeskFormValues["schedule"]) => void;
 }) => {
   const lang = useCoreStore((state) => state.userSettings.lang);
-  console.log("value: ", value);
   const {t} = useTranslation();
   const handleChipClick = (day: number) => {
     const newSchedule = {...value};
@@ -40,6 +41,30 @@ export const WorkTimePicker = ({
 
   const handlePeriodChange = (date: Date | null, type: "from" | "to") => {
     onChange({...value, workingPeriod: {...value.workingPeriod, [type]: date}});
+  };
+
+  const handleBreakTimeChange = (
+    index: number,
+    date: Date | null,
+    type: "from" | "to"
+  ) => {
+    if (date) {
+      const newBreaks = produce(value.breaks, (draft) => {
+        draft[index][type] = date;
+      });
+      onChange({...value, breaks: newBreaks});
+    }
+  };
+
+  const handleAddBreak = () => {
+    onChange({...value, breaks: [...value.breaks, {from: null, to: null}]});
+  };
+
+  const handleBreakDelete = (index: number) => {
+    const newBreaks = produce(value.breaks, (draft) => {
+      draft.splice(index, 1);
+    });
+    onChange({...value, breaks: newBreaks});
   };
 
   const handleShowDetails = () => {
@@ -98,16 +123,13 @@ export const WorkTimePicker = ({
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={4}>
+      <Grid item xs={6}>
         <Typography variant="h5">{t("Working days")}</Typography>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={6}>
         <Typography variant="h5">{t("Working period")}</Typography>
       </Grid>
-      <Grid item xs={4}>
-        <Typography variant="h5">{t("Working time")}</Typography>
-      </Grid>
-      <Grid item container xs={4}>
+      <Grid item container xs={6}>
         <Box
           sx={{
             display: "flex",
@@ -130,7 +152,7 @@ export const WorkTimePicker = ({
           ))}
         </Box>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={6}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <Typography variant="h6">{t("From")}</Typography>
@@ -152,7 +174,13 @@ export const WorkTimePicker = ({
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={6}>
+        <Typography variant="h5">{t("Working time")}</Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <Typography variant="h5">{t("Breaks")}</Typography>
+      </Grid>
+      <Grid item xs={6}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <Typography variant="h6">{t("From")}</Typography>
@@ -176,7 +204,43 @@ export const WorkTimePicker = ({
           </Grid>
         </Grid>
       </Grid>
-      <Button onClick={handleShowDetails}>{t("Detailed settings")}</Button>
+      <Grid item xs={6}>
+        {value.breaks.map((breakTime, index) => (
+          <Grid container spacing={2} key={index}>
+            <Grid item xs={5}>
+              <Typography variant="h6">{t("From")}</Typography>
+            </Grid>
+            <Grid item xs={5}>
+              <Typography variant="h6">{t("To")}</Typography>
+            </Grid>
+            <Grid item xs={5}>
+              <TimePicker
+                timezone="system"
+                value={breakTime.from}
+                onChange={(value) =>
+                  handleBreakTimeChange(index, value, "from")
+                }
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <TimePicker
+                timezone="system"
+                value={breakTime.to}
+                onChange={(value) => handleBreakTimeChange(index, value, "to")}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <IconButton onClick={() => handleBreakDelete(index)}>
+                <CloseIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+        ))}
+        <Button onClick={handleAddBreak}>{t("Add break")}</Button>
+      </Grid>
+      <Button sx={{mt: "16px"}} onClick={handleShowDetails}>
+        {t("Detailed settings")}
+      </Button>
     </Grid>
   );
 };
