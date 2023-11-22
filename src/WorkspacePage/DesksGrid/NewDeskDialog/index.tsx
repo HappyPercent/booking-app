@@ -12,6 +12,7 @@ import addWeeks from 'date-fns/addWeeks';
 import { INewDeskFormValues } from './types';
 import api from '../../../client/api';
 import { useTranslation } from 'react-i18next';
+import { getEvents } from '../../WorkTimePicker/helpers/getEvents';
 
 const schema = Yup.object().shape({
 	name: Yup.string().required('Required'),
@@ -78,12 +79,12 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 		[countries]
 	);
 	const handleSubmit = (values: INewDeskFormValues) => {
-		if (values.city?.id && values.country?.id && !!values.schedule.events) {
+		if (values.city?.id && values.country?.id) {
 			const data = {
 				name: values.name,
 				cityId: values.city.id,
 				countryId: values.country.id,
-				schedule: values.schedule.events?.map((event) => ({
+				schedule: getEvents(values.schedule)?.map((event) => ({
 					dateTimeStart: new Date(event.startStr).toISOString(),
 					dateTimeEnd: new Date(event.endStr).toISOString(),
 				})),
