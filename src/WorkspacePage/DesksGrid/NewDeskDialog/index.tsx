@@ -84,7 +84,7 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 				name: values.name,
 				cityId: values.city.id,
 				countryId: values.country.id,
-				schedule: getEvents(values.schedule)?.map((event) => ({
+				schedule: (values.schedule.events?.length ? values.schedule.events : getEvents(values.schedule))?.map((event) => ({
 					dateTimeStart: new Date(event.startStr).toISOString(),
 					dateTimeEnd: new Date(event.endStr).toISOString(),
 				})),
