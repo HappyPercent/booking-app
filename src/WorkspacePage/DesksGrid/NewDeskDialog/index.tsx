@@ -66,13 +66,14 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 			},
 		}
 	);
-	const { data: countries } = useQuery<{ content: ICountry[] }>(['countries'], async () => (await api.getAllCountries()).data, {
+	const { data: countries } = useQuery(['countries'], async () => (await api.getAllCountries()).data, {
 		enabled: open,
+		select: (data) => data.data.content,
 	});
 
 	const countriesOptions = useMemo(
 		() =>
-			countries?.content.map((country: ICountry) => ({
+			countries?.map((country: ICountry) => ({
 				label: country.name,
 				id: country.id,
 			})) || [],
@@ -160,16 +161,13 @@ const CitySelect = ({
 	onChange: (value: ICity | null) => void;
 	error: boolean;
 }) => {
-	const { data: cities, isFetching } = useQuery<{ content: ICity[] }>(
-		['citiesByCountry', countryId],
-		async () => (await api.getCityByCountry(String(countryId))).data,
-		{
-			enabled: !!countryId,
-		}
-	);
+	const { data: cities, isFetching } = useQuery(['citiesByCountry', countryId], async () => (await api.getCityByCountry(String(countryId))).data, {
+		enabled: !!countryId,
+		select: (data) => data.data.content,
+	});
 	const citiesOptions = useMemo(
 		() =>
-			cities?.content.map((city) => ({
+			cities?.map((city) => ({
 				...city,
 				label: city.name,
 				id: city.id,

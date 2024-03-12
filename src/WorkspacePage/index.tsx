@@ -15,7 +15,7 @@ export const WorkspacePage = () => {
 	const { data: desks, isLoading: isDesksLoading } = useGetDesks();
 	const deskGridData = useMemo(() => {
 		const output: { [key in IDesk['id']]: { desk: IDesk; proposals: IService[] } } = {};
-		desks?.content.forEach((item: { desk: IDesk; proposal: IService }) => {
+		desks?.forEach((item: { desk: IDesk; proposal: IService }) => {
 			if (output[item.desk.id]) {
 				output[item.desk.id].proposals.push(item.proposal);
 			} else {
@@ -26,7 +26,7 @@ export const WorkspacePage = () => {
 			}
 		});
 		return output;
-	}, [desks?.content]);
+	}, [desks]);
 
 	if (isDesksLoading || isServicesLoading) {
 		return <div>{t('Loading')}...</div>;
@@ -58,7 +58,7 @@ export const WorkspacePage = () => {
 						borderRight: 1,
 					}}
 				>
-					<ServicesList data={services?.content} />
+					<ServicesList data={services} />
 				</Grid>
 				<Grid
 					sx={{

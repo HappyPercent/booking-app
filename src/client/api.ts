@@ -1,5 +1,6 @@
 import { ICategory, ICity, ICountry, IDesk, IService, ISlot } from '../core/constants/types';
 import { HttpClient, RequestParams } from './http-client';
+import { BackendResponse } from './types';
 
 class Api extends HttpClient {
 	loginUser = (
@@ -82,7 +83,7 @@ class Api extends HttpClient {
 		});
 
 	getAllCountries = (params: RequestParams = {}) =>
-		this.request<{ content: ICountry[] }, any>({
+		this.request<BackendResponse<ICountry[]>, any>({
 			path: `/geo/country`,
 			method: 'GET',
 			query: {
@@ -93,7 +94,7 @@ class Api extends HttpClient {
 		});
 
 	getCityByCountry = (countryId: string, params: RequestParams = {}) =>
-		this.request<{ content: ICity[] }, any>({
+		this.request<BackendResponse<ICity[]>, any>({
 			path: `/geo/city`,
 			method: 'GET',
 			query: {
@@ -103,7 +104,7 @@ class Api extends HttpClient {
 		});
 
 	getSlotsByDesk = (deskId: number, params: RequestParams = {}) =>
-		this.request<{ content: ISlot[] }, any>({
+		this.request<BackendResponse<ISlot[]>, any>({
 			path: `/slot`,
 			method: 'GET',
 			query: {
@@ -115,7 +116,7 @@ class Api extends HttpClient {
 		});
 
 	getUserDesks = (params: RequestParams = {}) =>
-		this.request<{ content: { desk: IDesk; proposal: IService }[] }, any>({
+		this.request<BackendResponse<{ desk: IDesk; proposal: IService }[]>, any>({
 			path: `/desk/all`,
 			method: 'GET',
 			query: {
@@ -126,7 +127,7 @@ class Api extends HttpClient {
 		});
 
 	getUserServices = (params: RequestParams = {}) =>
-		this.request<{ content: IService[] }, any>({
+		this.request<BackendResponse<IService[]>, any>({
 			path: `/proposal`,
 			method: 'GET',
 			query: {
@@ -148,7 +149,7 @@ class Api extends HttpClient {
 		});
 
 	getCategoryRootAll = (params: RequestParams = {}) =>
-		this.request<{ content: ICategory[] }, any>({
+		this.request<BackendResponse<ICategory[]>, any>({
 			path: `/category/root`,
 			method: 'GET',
 			query: {
@@ -158,7 +159,7 @@ class Api extends HttpClient {
 		});
 
 	getCategoryChildByRootId = (rootCategoryId: string, params: RequestParams = {}) =>
-		this.request<{ content: ICategory[] }, any>({
+		this.request<BackendResponse<ICategory[]>, any>({
 			path: `/category/child`,
 			method: 'GET',
 			query: {
@@ -180,7 +181,7 @@ class Api extends HttpClient {
 		});
 
 	getCurrencyAll = (params: RequestParams = {}) =>
-		this.request<{ code: string }[], any>({
+		this.request<{ data: { code: string }[] }, any>({
 			path: `/currency`,
 			method: 'GET',
 			...params,

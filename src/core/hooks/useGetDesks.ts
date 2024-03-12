@@ -4,9 +4,7 @@ import api from '../../client/api';
 export const useGetDesks = () =>
 	useQuery({
 		queryKey: ['desks'],
-		queryFn: async () => {
-			const data = await api.getUserDesks();
-			return data.data;
-		},
+		queryFn: api.getUserDesks,
 		refetchOnWindowFocus: false,
+		select: (data) => data.data.data.content,
 	});

@@ -1,1 +1,1 @@
-export const BASE_ROUTE = 'http://113.30.190.63:8080/bookapp-1/api';
+export const BASE_ROUTE = 'http://5.180.182.162:8080/bookapp-1/api';

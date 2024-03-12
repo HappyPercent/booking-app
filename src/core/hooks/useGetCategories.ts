@@ -6,5 +6,6 @@ export const useGetCategories = () => {
 		queryKey: ['allCategories'],
 		queryFn: async () => (await api.getCategoryRootAll()).data,
 		refetchOnWindowFocus: false,
+		select: (data) => data.data.content,
 	});
 };

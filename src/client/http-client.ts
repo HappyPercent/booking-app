@@ -175,22 +175,19 @@ export class HttpClient<SecurityDataType = unknown> {
 
 			response.json = response.text;
 
-			const clonedResponse = r.clone();
-			const data = !responseFormat
-				? (clonedResponse as HttpResponse<T, E>)
-				: await response[responseFormat]()
-						.then((data) => {
-							if (r.ok) {
-								r.data = responseFormat === 'json' ? JSON.parse(data) : data;
-							} else {
-								r.error = responseFormat === 'json' ? JSON.parse(data) : data;
-							}
-							return r;
-						})
-						.catch((e) => {
-							r.error = e;
-							return r;
-						});
+			const data = await response[responseFormat]()
+				.then((data) => {
+					if (r.ok) {
+						r.data = responseFormat === 'json' ? JSON.parse(data) : data;
+					} else {
+						r.error = responseFormat === 'json' ? JSON.parse(data) : data;
+					}
+					return r;
+				})
+				.catch((e) => {
+					r.error = e;
+					return r;
+				});
 
 			if (!response.ok) {
 				!auth && this.enqueueServerError(data);

@@ -11,14 +11,14 @@ export const CurrentSchedule = ({ deskId }: { deskId: number }) => {
 
 	const calendarData = useMemo(
 		() =>
-			data?.content.map(({ dateTimeEnd, dateTimeStart }) => ({
+			data?.map(({ dateTimeEnd, dateTimeStart }) => ({
 				start: dateTimeStart,
 				end: dateTimeEnd,
 				startStr: dateTimeStart,
 				endStr: dateTimeEnd,
 				title: 'Working time',
 			})),
-		[data?.content]
+		[data]
 	);
 
 	return (

@@ -103,7 +103,9 @@ export const NewServiceDialog = ({ open, onClose }: INewServiceDialogProps) => {
 									name='categoryGroupId'
 									error={!!touched.categoryGroupId && !!errors.categoryGroupId}
 								>
-									{categories?.content.map((category) => <MenuItem value={category.id}>{category.name}</MenuItem>)}
+									{categories?.map((category) => (
+										<MenuItem value={category.id}>{category.name}</MenuItem>
+									))}
 								</Select>
 							</FormControl>
 							<SubcategorySelect
@@ -219,14 +221,15 @@ export const NewServiceDialog = ({ open, onClose }: INewServiceDialogProps) => {
 
 const SubcategorySelect = ({ categoryId, value, onChange, error }: ISubcategorySelectProps) => {
 	const { t } = useTranslation();
-	const subcategories = useQuery(['subcategories', categoryId], () => api.getCategoryChildByRootId(categoryId), {
+	const { data: subcategories } = useQuery(['subcategories', categoryId], async () => (await api.getCategoryChildByRootId(categoryId)).data, {
 		enabled: !!categoryId,
+		select: (data) => data.data.content,
 	});
 	return (
 		<FormControl error={error}>
 			<InputLabel>{t('Subcategory')}</InputLabel>
 			<Select label={t('Subcategory')} onChange={onChange} value={value} name='categoryId' error={error}>
-				{subcategories.data?.data?.content.map((category) => (
+				{subcategories?.map((category) => (
 					<MenuItem key={category.id} value={category.id}>
 						{category.name}
 					</MenuItem>

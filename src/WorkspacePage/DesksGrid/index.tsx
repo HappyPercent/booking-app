@@ -86,10 +86,7 @@ const LinkProposalButton = ({ deskId, services }: { deskId: number; services: IS
 	const queryClient = useQueryClient();
 	const [isLinking, setIsLinking] = useState(false);
 	const { data } = useGetServices();
-	const avaliableServices = useMemo(
-		() => data?.content.filter(({ id }) => !services.find((service) => service?.id === id)),
-		[data?.content, services]
-	);
+	const avaliableServices = useMemo(() => data?.filter(({ id }) => !services.find((service) => service?.id === id)), [data, services]);
 	const { mutate } = useMutation((proposalId: number) => api.linkProposalToDesk(proposalId, deskId), {
 		onSuccess: () => {
 			setIsLinking(false);
@@ -105,7 +102,13 @@ const LinkProposalButton = ({ deskId, services }: { deskId: number; services: IS
 	};
 
 	if (isLinking) {
-		return <Select>{avaliableServices?.map((service) => <MenuItem onClick={() => handleClick(service.id)}>{service.name}</MenuItem>)}</Select>;
+		return (
+			<Select>
+				{avaliableServices?.map((service) => (
+					<MenuItem onClick={() => handleClick(service.id)}>{service.name}</MenuItem>
+				))}
+			</Select>
+		);
 	}
 
 	return (

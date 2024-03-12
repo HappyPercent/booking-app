@@ -4,5 +4,6 @@ import api from '../../client/api';
 export const useGetSlotsByDesk = (deskId: number) =>
 	useQuery({
 		queryKey: ['slotsWithDesks', deskId],
-		queryFn: async () => (await api.getSlotsByDesk(deskId)).data,
+		queryFn: async () => api.getSlotsByDesk(deskId),
+		select: (data) => data.data.data.content,
 	});
