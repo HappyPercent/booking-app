@@ -39,6 +39,9 @@ export const resources: Resource = {
 			'Price pack': 'Price pack',
 			Breaks: 'Breaks',
 			'Add break': 'Add break',
+			"Use this week's schedule": "Use this week's schedule",
+			Edit: 'Edit',
+			Save: 'Save',
 		},
 	},
 	'sr-RS': {
@@ -79,6 +82,9 @@ export const resources: Resource = {
 			'Price pack': 'Цена пакета',
 			Breaks: 'Паузе',
 			'Add break': 'Додај паузу',
+			"Use this week's schedule": 'Користи распоред за ову недељу',
+			Edit: 'Измени',
+			Save: 'Сачувај',
 		},
 	},
 };

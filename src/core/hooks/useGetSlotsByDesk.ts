@@ -5,5 +5,5 @@ export const useGetSlotsByDesk = (deskId: number) =>
 	useQuery({
 		queryKey: ['slotsWithDesks', deskId],
 		queryFn: async () => api.getSlotsByDesk(deskId),
-		select: (data) => data.data.data.content,
+		select: (data) => data.data.data?.content,
 	});

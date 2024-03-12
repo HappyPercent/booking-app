@@ -20,11 +20,10 @@ class Api extends HttpClient {
 		});
 
 	createDesk = (data: { name: string; cityId: number; countryId: number }, params: RequestParams = {}) =>
-		this.request<string, any>({
+		this.request<{ data: string }, any>({
 			path: `/desk`,
 			method: 'POST',
 			body: data,
-			format: 'text',
 			...params,
 		});
 
@@ -104,7 +103,7 @@ class Api extends HttpClient {
 		});
 
 	getSlotsByDesk = (deskId: number, params: RequestParams = {}) =>
-		this.request<BackendResponse<ISlot[]>, any>({
+		this.request<BackendResponse<{ slot: ISlot; desk: IDesk }[]>, any>({
 			path: `/slot`,
 			method: 'GET',
 			query: {
@@ -184,6 +183,17 @@ class Api extends HttpClient {
 		this.request<{ data: { code: string }[] }, any>({
 			path: `/currency`,
 			method: 'GET',
+			...params,
+		});
+
+	updateSlotByDesk = (deskId: string, slots: { dateTimeStart: string; dateTimeEnd: string }[], params: RequestParams = {}) =>
+		this.request<string, any>({
+			path: `/slot/update`,
+			method: 'POST',
+			query: {
+				deskId,
+			},
+			body: slots,
 			...params,
 		});
 }

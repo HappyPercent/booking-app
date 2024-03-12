@@ -6,5 +6,5 @@ export const useGetDesks = () =>
 		queryKey: ['desks'],
 		queryFn: api.getUserDesks,
 		refetchOnWindowFocus: false,
-		select: (data) => data.data.data.content,
+		select: (data) => data.data.data?.content,
 	});

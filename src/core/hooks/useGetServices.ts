@@ -6,6 +6,6 @@ export const useGetServices = () => {
 		queryKey: ['services'],
 		queryFn: api.getUserServices,
 		refetchOnWindowFocus: false,
-		select: (data) => data.data.data.content,
+		select: (data) => data.data.data?.content,
 	});
 };

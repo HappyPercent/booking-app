@@ -223,7 +223,7 @@ const SubcategorySelect = ({ categoryId, value, onChange, error }: ISubcategoryS
 	const { t } = useTranslation();
 	const { data: subcategories } = useQuery(['subcategories', categoryId], async () => (await api.getCategoryChildByRootId(categoryId)).data, {
 		enabled: !!categoryId,
-		select: (data) => data.data.content,
+		select: (data) => data.data?.content,
 	});
 	return (
 		<FormControl error={error}>

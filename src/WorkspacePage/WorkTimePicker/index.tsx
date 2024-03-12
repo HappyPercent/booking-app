@@ -23,7 +23,6 @@ export const WorkTimePicker = ({
 	value: INewDeskFormValues['schedule'];
 	onChange: (values: INewDeskFormValues['schedule']) => void;
 }) => {
-	console.log('value: ', value.events);
 	const calendarRef = useRef<FullCalendar | null>(null);
 	const lang = useCoreStore((state) => state.userSettings.lang);
 	const { t } = useTranslation();
@@ -99,12 +98,12 @@ export const WorkTimePicker = ({
 				ref={calendarRef}
 				customButtons={{
 					spreadWeekScheduleButton: {
-						text: "Use this week's schedule",
+						text: t("Use this week's schedule"),
 						click: handleSpreadWeekScheduleClick,
 					},
 				}}
 				headerToolbar={{
-					end: 'spreadWeekScheduleButton today prev next',
+					end: 'spreadWeekScheduleButton today prev,next',
 				}}
 				buttonText={{
 					today: t('Today'),

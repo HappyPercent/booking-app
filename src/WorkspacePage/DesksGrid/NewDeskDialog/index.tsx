@@ -57,7 +57,7 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 				countryId: values.countryId,
 				name: values.name,
 			});
-			await api.createSlotsForDesk(Number(response.data), values.schedule);
+			await api.createSlotsForDesk(Number(response.data.data), values.schedule);
 		},
 		{
 			onSuccess: () => {
@@ -68,7 +68,7 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 	);
 	const { data: countries } = useQuery(['countries'], async () => (await api.getAllCountries()).data, {
 		enabled: open,
-		select: (data) => data.data.content,
+		select: (data) => data.data?.content,
 	});
 
 	const countriesOptions = useMemo(
@@ -163,7 +163,7 @@ const CitySelect = ({
 }) => {
 	const { data: cities, isFetching } = useQuery(['citiesByCountry', countryId], async () => (await api.getCityByCountry(String(countryId))).data, {
 		enabled: !!countryId,
-		select: (data) => data.data.content,
+		select: (data) => data.data?.content,
 	});
 	const citiesOptions = useMemo(
 		() =>
