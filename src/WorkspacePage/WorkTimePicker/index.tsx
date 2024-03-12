@@ -13,6 +13,8 @@ import { useCoreStore } from '../../core/store';
 import { endOfDay } from 'date-fns';
 import { produce } from 'immer';
 import CloseIcon from '@mui/icons-material/Close';
+import { useRef } from 'react';
+import { getSpreadWeekSchedule } from './helpers/getSpreadWeekSchedule';
 
 export const WorkTimePicker = ({
 	value,
@@ -21,6 +23,8 @@ export const WorkTimePicker = ({
 	value: INewDeskFormValues['schedule'];
 	onChange: (values: INewDeskFormValues['schedule']) => void;
 }) => {
+	console.log('value: ', value.events);
+	const calendarRef = useRef<FullCalendar | null>(null);
 	const lang = useCoreStore((state) => state.userSettings.lang);
 	const { t } = useTranslation();
 	const handleChipClick = (day: number) => {
@@ -76,9 +80,32 @@ export const WorkTimePicker = ({
 		});
 	};
 
+	const handleSpreadWeekScheduleClick = () => {
+		const calendarApi = calendarRef.current?.getApi();
+		if (calendarApi) {
+			const weekStart = calendarApi.view.currentStart;
+			const weekEnd = calendarApi.view.currentEnd;
+			const weekSchedule = value.events?.filter((event) => new Date(event.startStr) >= weekStart && new Date(event.endStr) <= weekEnd) || [];
+			const newSchedule = getSpreadWeekSchedule(value.workingPeriod.from, value.workingPeriod.to, weekSchedule);
+			onChange({ ...value, events: newSchedule });
+			calendarApi.removeAllEvents();
+			calendarApi.addEventSource(newSchedule);
+		}
+	};
+
 	if (value.detail) {
 		return (
 			<FullCalendar
+				ref={calendarRef}
+				customButtons={{
+					spreadWeekScheduleButton: {
+						text: "Use this week's schedule",
+						click: handleSpreadWeekScheduleClick,
+					},
+				}}
+				headerToolbar={{
+					end: 'spreadWeekScheduleButton today prev next',
+				}}
 				buttonText={{
 					today: t('Today'),
 				}}
