@@ -44,6 +44,24 @@ class Api extends HttpClient {
 			...params,
 		});
 
+	editProposal = (
+		data: {
+			id: number;
+			name: string;
+			categoryId: string;
+			shortDescr: string;
+			descr: string;
+			pricePack: { duration: number; price: number; currency: string }[];
+		},
+		params: RequestParams = {}
+	) =>
+		this.request<string, any>({
+			path: `/proposal`,
+			method: 'PATCH',
+			body: data,
+			...params,
+		});
+
 	createSlotsForDesk = (
 		deskId: number,
 		data: {

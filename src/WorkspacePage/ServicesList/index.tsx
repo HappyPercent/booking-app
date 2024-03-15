@@ -5,17 +5,23 @@ import { NewServiceDialog } from './NewServiceDialog';
 import { useState } from 'react';
 import { IService } from '../../core/constants/types';
 import { useTranslation } from 'react-i18next';
+import EditIcon from '@mui/icons-material/Edit';
+import { INewServiceDialogProps } from './NewServiceDialog/types';
 
 export const ServicesList = ({ data = [] }: { data: IService[] | undefined }) => {
-	const [open, setOpen] = useState(false);
+	const [serviceDialogState, setServiceDialogState] = useState<INewServiceDialogProps['state']>({ open: false, edit: false, service: null });
 	const { t } = useTranslation();
+
+	const handleEditClick = (serviceId: number) => {
+		setServiceDialogState({ open: true, edit: true, service: data.find((service) => service.id === serviceId) || null });
+	};
 
 	return (
 		<>
-			<NewServiceDialog open={open} onClose={() => setOpen(false)} />
+			<NewServiceDialog state={serviceDialogState} onClose={() => setServiceDialogState({ open: false, edit: false, service: null })} />
 			<List subheader={<Typography variant='h6'>{t('Services')}</Typography>}>
 				{data.map((service) => (
-					<ServiceListItem key={service.id} data={service} />
+					<ServiceListItem key={service.id} data={service} onEditClick={handleEditClick} />
 				))}
 				<Button
 					sx={{
@@ -23,7 +29,7 @@ export const ServicesList = ({ data = [] }: { data: IService[] | undefined }) =>
 					}}
 					color='primary'
 					variant='contained'
-					onClick={() => setOpen(true)}
+					onClick={() => setServiceDialogState({ open: true, edit: false, service: null })}
 					endIcon={<AddIcon />}
 				>
 					{t('Add service')}
@@ -33,7 +39,7 @@ export const ServicesList = ({ data = [] }: { data: IService[] | undefined }) =>
 	);
 };
 
-const ServiceListItem = ({ data }: { data: IService }) => {
+const ServiceListItem = ({ data, onEditClick }: { data: IService; onEditClick: (id: number) => void }) => {
 	const { t } = useTranslation();
 	return (
 		<ListItem
@@ -45,20 +51,6 @@ const ServiceListItem = ({ data }: { data: IService }) => {
 								<Typography variant={'body2'}>{t('Description')}:</Typography>
 								<Typography variant={'body2'}>{data.shortDescr}</Typography>
 							</Stack>
-							{/* <Stack direction={"row"} spacing={1}>
-                <Typography variant={"body2"}>{t("Duration")}:</Typography>
-                <Typography variant={"body2"}>{data.duration}</Typography>
-              </Stack>
-              <Stack direction={"row"} spacing={1}>
-                <Typography variant={"body2"}>{t("Price")}:</Typography>
-                <Typography variant={"body2"}>{data.price}</Typography>
-              </Stack> */}
-							{/* <Stack direction={"row"} spacing={1}>
-                <Typography variant={"body2"}>{t("Category")}:</Typography>
-                <Typography variant={"body2"}>
-                  {data.category.description}
-                </Typography>
-              </Stack> */}
 						</Stack>
 					}
 					placement='right'
@@ -70,6 +62,9 @@ const ServiceListItem = ({ data }: { data: IService }) => {
 			}
 		>
 			<Typography variant='body1'>{data.name}</Typography>
+			<IconButton onClick={() => onEditClick(data.id)}>
+				<EditIcon />
+			</IconButton>
 		</ListItem>
 	);
 };

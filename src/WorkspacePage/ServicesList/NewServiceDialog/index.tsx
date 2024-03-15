@@ -40,7 +40,7 @@ const schema = Yup.object().shape({
 	),
 });
 
-const initialValues: INewServiceFormData = {
+const initialEmptyValues: INewServiceFormData = {
 	name: '',
 	categoryGroupId: '',
 	categoryId: '',
@@ -55,7 +55,7 @@ const initialValues: INewServiceFormData = {
 	],
 };
 
-export const NewServiceDialog = ({ open, onClose }: INewServiceDialogProps) => {
+export const NewServiceDialog = ({ state, onClose }: INewServiceDialogProps) => {
 	const { data: categories } = useGetCategories();
 	const { t } = useTranslation();
 	const queryClient = useQueryClient();
@@ -67,20 +67,54 @@ export const NewServiceDialog = ({ open, onClose }: INewServiceDialogProps) => {
 			}
 		},
 	});
+	const { mutate: editService } = useMutation(api.editProposal, {
+		onSuccess: (data) => {
+			queryClient.invalidateQueries(['services']);
+			if (data.ok) {
+				onClose();
+			}
+		},
+	});
 	const { data: currency } = useCurrencyAll();
+	const initialValues: INewServiceFormData =
+		state.edit && state.service
+			? {
+					...state.service,
+					categoryId: String(state.service.category.id),
+					categoryGroupId: String(state.service.category.root?.id) || '',
+					pricePack:
+						state.service.pricePack?.map((pack) => ({
+							...pack,
+							currency: { code: pack.currency },
+						})) || initialEmptyValues.pricePack,
+			  }
+			: initialEmptyValues;
 
 	const handleSubmit = (values: INewServiceFormData) => {
-		addService({
-			...values,
-			pricePack: values.pricePack.map((pack) => ({
-				...pack,
-				currency: pack.currency?.code || 'USD',
-			})),
-		});
+		if (state.edit) {
+			if (state.service?.id) {
+				editService({
+					id: state.service.id,
+					...values,
+					pricePack: values.pricePack.map((pack) => ({
+						...pack,
+						currency: pack.currency?.code || 'USD',
+					})),
+				});
+			}
+		} else {
+			addService({
+				...values,
+				pricePack: values.pricePack.map((pack) => ({
+					...pack,
+					currency: pack.currency?.code || 'USD',
+				})),
+			});
+		}
 	};
 
 	return (
-		<Dialog open={open} fullWidth onClose={onClose}>
+		<Dialog open={state.open} fullWidth onClose={onClose}>
 			<DialogTitle>{t('Add service')}</DialogTitle>
 			<Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={schema}>
 				{({ values, handleChange, touched, errors, handleSubmit, setFieldValue }) => (
@@ -209,7 +243,7 @@ export const NewServiceDialog = ({ open, onClose }: INewServiceDialogProps) => {
 						<DialogActions>
 							<Button onClick={onClose}>{t('Cancel')}</Button>
 							<Button onClick={() => handleSubmit()} color='primary' variant='contained'>
-								{t('Create')}
+								{state.edit ? t('Save') : t('Create')}
 							</Button>
 						</DialogActions>
 					</DialogContent>

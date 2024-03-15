@@ -1,7 +1,12 @@
 import { SelectChangeEvent } from '@mui/material';
+import { IService } from '../../../core/constants/types';
 
 export interface INewServiceDialogProps {
-	open: boolean;
+	state: {
+		open: boolean;
+		edit: boolean;
+		service: IService | null;
+	};
 	onClose: () => void;
 }
 
