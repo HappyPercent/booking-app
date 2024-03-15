@@ -7,13 +7,26 @@ import { IService } from '../../core/constants/types';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import { INewServiceDialogProps } from './NewServiceDialog/types';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import api from '../../client/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const ServicesList = ({ data = [] }: { data: IService[] | undefined }) => {
 	const [serviceDialogState, setServiceDialogState] = useState<INewServiceDialogProps['state']>({ open: false, edit: false, service: null });
 	const { t } = useTranslation();
+	const queryClient = useQueryClient();
+	const { mutate: deleteService } = useMutation(api.deleteProposal, {
+		onSuccess: () => {
+			queryClient.invalidateQueries(['services']);
+		},
+	});
 
 	const handleEditClick = (serviceId: number) => {
 		setServiceDialogState({ open: true, edit: true, service: data.find((service) => service.id === serviceId) || null });
+	};
+
+	const handleSeleteServiceClick = (serviceId: number) => {
+		deleteService(serviceId);
 	};
 
 	return (
@@ -21,7 +34,7 @@ export const ServicesList = ({ data = [] }: { data: IService[] | undefined }) =>
 			<NewServiceDialog state={serviceDialogState} onClose={() => setServiceDialogState({ open: false, edit: false, service: null })} />
 			<List subheader={<Typography variant='h6'>{t('Services')}</Typography>}>
 				{data.map((service) => (
-					<ServiceListItem key={service.id} data={service} onEditClick={handleEditClick} />
+					<ServiceListItem key={service.id} data={service} onEditClick={handleEditClick} onDeleteClick={handleSeleteServiceClick} />
 				))}
 				<Button
 					sx={{
@@ -39,7 +52,15 @@ export const ServicesList = ({ data = [] }: { data: IService[] | undefined }) =>
 	);
 };
 
-const ServiceListItem = ({ data, onEditClick }: { data: IService; onEditClick: (id: number) => void }) => {
+const ServiceListItem = ({
+	data,
+	onEditClick,
+	onDeleteClick,
+}: {
+	data: IService;
+	onEditClick: (id: number) => void;
+	onDeleteClick: (id: number) => void;
+}) => {
 	const { t } = useTranslation();
 	return (
 		<ListItem
@@ -64,6 +85,9 @@ const ServiceListItem = ({ data, onEditClick }: { data: IService; onEditClick: (
 			<Typography variant='body1'>{data.name}</Typography>
 			<IconButton onClick={() => onEditClick(data.id)}>
 				<EditIcon />
+			</IconButton>
+			<IconButton onClick={() => onDeleteClick(data.id)}>
+				<DeleteOutlineIcon />
 			</IconButton>
 		</ListItem>
 	);

@@ -53,7 +53,7 @@ export const WorkspacePage = () => {
 				<Grid
 					item
 					xs={6}
-					lg={2}
+					lg={3}
 					sx={{
 						borderRight: 1,
 					}}
@@ -67,7 +67,7 @@ export const WorkspacePage = () => {
 					}}
 					item
 					xs={6}
-					lg={10}
+					lg={9}
 				>
 					<DesksGrid data={deskGridData} onDeskClick={setSelectedDesk} selectedDesk={selectedDesk} />
 				</Grid>
