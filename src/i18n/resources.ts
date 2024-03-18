@@ -42,6 +42,8 @@ export const resources: Resource = {
 			"Use this week's schedule": "Use this week's schedule",
 			Edit: 'Edit',
 			Save: 'Save',
+			New: 'New',
+			desk: 'desk',
 		},
 	},
 	'sr-RS': {
@@ -85,6 +87,8 @@ export const resources: Resource = {
 			"Use this week's schedule": 'Користи распоред за ову недељу',
 			Edit: 'Измени',
 			Save: 'Сачувај',
+			New: 'Нови',
+			desk: 'сто',
 		},
 	},
 };

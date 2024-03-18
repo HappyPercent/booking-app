@@ -3,7 +3,7 @@ import { WEEKDAYS } from '../constants';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import FullCalendar from '@fullcalendar/react';
 import { DatePicker } from '@mui/x-date-pickers';
-import { INewDeskFormValues } from '../DesksGrid/NewDeskDialog/types';
+import { IDeskFormValues } from '../DesksGrid/DeskDialog/types';
 import { getEvents } from './helpers/getEvents';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -20,8 +20,8 @@ export const WorkTimePicker = ({
 	value,
 	onChange,
 }: {
-	value: INewDeskFormValues['schedule'];
-	onChange: (values: INewDeskFormValues['schedule']) => void;
+	value: NonNullable<IDeskFormValues['schedule']>;
+	onChange: (values: IDeskFormValues['schedule']) => void;
 }) => {
 	const calendarRef = useRef<FullCalendar | null>(null);
 	const lang = useCoreStore((state) => state.userSettings.lang);

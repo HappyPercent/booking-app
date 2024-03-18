@@ -1,14 +1,15 @@
-import { INewDeskFormValues } from '../../DesksGrid/NewDeskDialog/types';
+import { IDeskFormValues } from '../../DesksGrid/DeskDialog/types';
 import getDay from 'date-fns/getDay';
 import { eachDayOfInterval, getDayOfYear, getYear, setDayOfYear, setYear } from 'date-fns';
 
-export const getEvents = (data: INewDeskFormValues['schedule']) => {
+export const getEvents = (data: IDeskFormValues['schedule']) => {
 	const output = [] as {
 		start: string;
 		end: string;
 		startStr: string;
 		endStr: string;
 	}[];
+	if (!data) return output;
 	const oneDayEvents = getOneDayEvents(data);
 	const period = eachDayOfInterval({
 		start: data.workingPeriod.from,
@@ -33,7 +34,7 @@ export const getEvents = (data: INewDeskFormValues['schedule']) => {
 	return output;
 };
 
-const getOneDayEvents = (data: INewDeskFormValues['schedule']) => {
+const getOneDayEvents = (data: NonNullable<IDeskFormValues['schedule']>) => {
 	const breaks = getPureSortedBreaks(data.breaks);
 	let timeStart = setDayOfYear(setYear(data.workingHours.from, 1900), 1);
 	const timeEnd = setDayOfYear(setYear(data.workingHours.to, 1900), 1);
@@ -60,7 +61,7 @@ const getOneDayEvents = (data: INewDeskFormValues['schedule']) => {
 	return res;
 };
 
-const getPureSortedBreaks = (data: INewDeskFormValues['schedule']['breaks']) => {
+const getPureSortedBreaks = (data: NonNullable<IDeskFormValues['schedule']>['breaks']) => {
 	const breaks = [
 		...(
 			data.filter((b) => b.from && b.to && b.from < b.to) as {

@@ -27,6 +27,22 @@ class Api extends HttpClient {
 			...params,
 		});
 
+	editDesk = (
+		data: {
+			id: number;
+			name: string;
+			cityId: number;
+			countryId: number;
+		},
+		params: RequestParams = {}
+	) =>
+		this.request<string, any>({
+			path: `/desk`,
+			method: 'PATCH',
+			body: data,
+			...params,
+		});
+
 	deleteDesk = (deskId: number, params: RequestParams = {}) =>
 		this.request<void, any>({
 			path: `/desk`,

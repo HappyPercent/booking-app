@@ -1,13 +1,14 @@
 import { Button, Divider, IconButton, List, ListItem, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { IDesk, IService } from '../../core/constants/types';
 import { useMemo, useState } from 'react';
-import { NewDeskDialog } from './NewDeskDialog';
+import { DeskDialog } from './DeskDialog';
 import { useGetServices } from '../../core/hooks/useGetServices';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../client/api';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
 
 export const DesksGrid = ({
 	data = [],
@@ -19,7 +20,9 @@ export const DesksGrid = ({
 	selectedDesk: number | null;
 }) => {
 	const queryClient = useQueryClient();
-	const [open, setOpen] = useState(false);
+	const [deskDialogState, setDeskDialogState] = useState<{ open: boolean; edit?: boolean; desk?: IDesk }>({
+		open: false,
+	});
 	const { t } = useTranslation();
 
 	const { mutate: deleteServiceLink } = useMutation(
@@ -33,23 +36,32 @@ export const DesksGrid = ({
 		onSuccess: () => queryClient.invalidateQueries(['desks']),
 	});
 
+	const handleEditClick = (deskId: number) => {
+		setDeskDialogState({ open: true, edit: true, desk: data[deskId].desk });
+	};
+
 	return (
 		<>
-			<NewDeskDialog open={open} onClose={() => setOpen(false)} />
+			<DeskDialog state={deskDialogState} onClose={() => setDeskDialogState({ open: false })} />
 			<Stack direction={'row'} spacing={1} divider={<Divider orientation='vertical' flexItem />} display={'-webkit-box'}>
 				{Object.values(data).map((item) => (
-					<Stack spacing={1} divider={<Divider />} sx={{ minWidth: '123px' }}>
-						<Typography
-							style={{ cursor: 'pointer' }}
-							color={item.desk.id === selectedDesk ? 'primary' : ''}
-							variant='h6'
-							onClick={() => onDeskClick(item.desk.id)}
-						>
-							{item.desk.name}
+					<Stack spacing={1} divider={<Divider />} width={150}>
+						<Stack direction={'row'} spacing={1}>
+							<Typography
+								style={{ cursor: 'pointer' }}
+								color={item.desk.id === selectedDesk ? 'primary' : ''}
+								variant='h6'
+								onClick={() => onDeskClick(item.desk.id)}
+							>
+								{item.desk.name}
+							</Typography>
+							<IconButton onClick={() => handleEditClick(item.desk.id)}>
+								<EditIcon />
+							</IconButton>
 							<IconButton onClick={() => deleteDesk(item.desk.id)}>
 								<DeleteOutlineIcon />
 							</IconButton>
-						</Typography>
+						</Stack>
 						{!!item.proposals?.length && (
 							<List>
 								{item.proposals?.map((proposal) => (
@@ -81,7 +93,7 @@ export const DesksGrid = ({
 						alignSelf: 'baseline',
 					}}
 					variant='contained'
-					onClick={() => setOpen(true)}
+					onClick={() => setDeskDialogState({ open: true })}
 				>
 					{t('New desk')}
 				</Button>

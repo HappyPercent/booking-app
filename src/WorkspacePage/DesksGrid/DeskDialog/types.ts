@@ -1,10 +1,15 @@
-import { ICity, ICountry } from '../../../core/constants/types';
+import { ICity, ICountry, IDesk } from '../../../core/constants/types';
 
-export interface INewDeskFormValues {
+export interface IDeskDialogProps {
+	state: { open: boolean; edit?: boolean; desk?: IDesk };
+	onClose: () => void;
+}
+
+export interface IDeskFormValues {
 	name: string;
 	country: (ICountry & { label: string }) | null;
 	city: (ICity & { label: string }) | null;
-	schedule: {
+	schedule?: {
 		workingDays: number[];
 		workingPeriod: {
 			from: Date;

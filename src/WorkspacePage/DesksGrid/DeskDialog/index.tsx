@@ -2,14 +2,14 @@ import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ICity, ICountry } from '../../../core/constants/types';
 
 import { WorkTimePicker } from '../../WorkTimePicker';
 import { DEFAULT_WORKING_DAYS } from '../../constants';
 import startOfToday from 'date-fns/startOfToday';
 import addWeeks from 'date-fns/addWeeks';
-import { INewDeskFormValues } from './types';
+import { IDeskDialogProps, IDeskFormValues } from './types';
 import api from '../../../client/api';
 import { useTranslation } from 'react-i18next';
 import { getEvents } from '../../WorkTimePicker/helpers/getEvents';
@@ -20,7 +20,7 @@ const schema = Yup.object().shape({
 	city: Yup.object().required('Required'),
 });
 
-const initialValues = {
+const defaultValues = {
 	name: '',
 	country: null,
 	city: null,
@@ -37,12 +37,13 @@ const initialValues = {
 		breaks: [],
 		detail: false,
 	},
-} as INewDeskFormValues;
+} as IDeskFormValues;
 
-export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+export const DeskDialog = ({ state, onClose }: IDeskDialogProps) => {
 	const { t } = useTranslation();
 	const queryClient = useQueryClient();
-	const { mutate } = useMutation(
+	const [initialValues, setInitialValues] = useState<IDeskFormValues>(defaultValues);
+	const { mutate: createDesk } = useMutation(
 		async (values: {
 			name: string;
 			cityId: number;
@@ -66,10 +67,32 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 			},
 		}
 	);
-	const { data: countries } = useQuery(['countries'], async () => (await api.getAllCountries()).data, {
-		enabled: open,
-		select: (data) => data.data?.content,
+	const { mutate: updateDesk } = useMutation(api.editDesk, {
+		onSuccess: () => {
+			onClose();
+			queryClient.invalidateQueries(['desks']);
+		},
 	});
+
+	const { data: countries } = useQuery(['countries'], api.getAllCountries, {
+		enabled: state.open,
+		select: (data) => data.data?.data?.content,
+	});
+
+	useEffect(() => {
+		(async () => {
+			if (state.edit && countries?.length && state.desk) {
+				const country = countries.find((country) => country.name === state.desk?.country) as ICountry;
+				const cities = (await api.getCityByCountry(String(country.id))).data.data?.content;
+				const city = cities?.find((city) => city.name === state.desk?.city) as ICity;
+				setInitialValues({
+					name: state.desk?.name || '',
+					country: { ...country, label: country?.name } || null,
+					city: { ...city, label: city.name } || null,
+				});
+			}
+		})();
+	}, [state.edit, state.desk, countries]);
 
 	const countriesOptions = useMemo(
 		() =>
@@ -79,27 +102,39 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 			})) || [],
 		[countries]
 	);
-	const handleSubmit = (values: INewDeskFormValues) => {
+	const handleSubmit = (values: IDeskFormValues) => {
 		if (values.city?.id && values.country?.id) {
-			const data = {
-				name: values.name,
-				cityId: values.city.id,
-				countryId: values.country.id,
-				schedule: (values.schedule.events?.length ? values.schedule.events : getEvents(values.schedule))?.map((event) => ({
-					dateTimeStart: new Date(event.startStr).toISOString(),
-					dateTimeEnd: new Date(event.endStr).toISOString(),
-				})),
-			};
-			if (data.schedule) {
-				mutate(data);
+			if (state.edit && state.desk?.id) {
+				const data = {
+					id: state.desk?.id,
+					name: values.name,
+					cityId: values.city.id,
+					countryId: values.country.id,
+				};
+				updateDesk(data);
+			} else {
+				const data = {
+					name: values.name,
+					cityId: values.city.id,
+					countryId: values.country.id,
+					schedule: (values.schedule?.events?.length ? values.schedule.events : getEvents(values.schedule))?.map((event) => ({
+						dateTimeStart: new Date(event.startStr).toISOString(),
+						dateTimeEnd: new Date(event.endStr).toISOString(),
+					})),
+				};
+				if (data.schedule) {
+					createDesk(data);
+				}
 			}
 		}
 	};
 
 	return (
-		<Dialog open={open} onClose={onClose} fullWidth maxWidth={'xl'}>
-			<DialogTitle>{t('New desk')}</DialogTitle>
-			<Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={schema}>
+		<Dialog open={state.open} onClose={onClose} fullWidth maxWidth={'xl'}>
+			<DialogTitle>
+				{state.edit ? t('Edit') : t('New')} {t('desk')}
+			</DialogTitle>
+			<Formik initialValues={initialValues} enableReinitialize onSubmit={handleSubmit} validationSchema={schema}>
 				{({ values, errors, touched, handleChange, handleSubmit, setFieldValue }) => (
 					<DialogContent
 						sx={{
@@ -129,7 +164,9 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 								}}
 								error={!!touched.city && !!errors.city}
 							/>
-							<WorkTimePicker value={values.schedule} onChange={(schedule: typeof initialValues.schedule) => setFieldValue('schedule', schedule)} />
+							{!!values.schedule && !state.edit && (
+								<WorkTimePicker value={values.schedule} onChange={(schedule: typeof defaultValues.schedule) => setFieldValue('schedule', schedule)} />
+							)}
 						</Stack>
 						<DialogActions
 							sx={{
@@ -138,7 +175,7 @@ export const NewDeskDialog = ({ open, onClose }: { open: boolean; onClose: () =>
 						>
 							<Button onClick={onClose}>{t('Cancel')}</Button>
 							<Button onClick={() => handleSubmit()} color='primary' variant='contained'>
-								{t('Create')}
+								{state.edit ? t('Save') : t('Create')}
 							</Button>
 						</DialogActions>
 					</DialogContent>
