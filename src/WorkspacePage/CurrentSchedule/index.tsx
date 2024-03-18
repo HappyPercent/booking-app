@@ -62,10 +62,9 @@ export const CurrentSchedule = ({ deskId }: { deskId: number }) => {
 		});
 	};
 
-	if (!calendarData?.length) return null;
-
 	return (
 		<FullCalendar
+			key={deskId}
 			ref={calendarRef}
 			customButtons={{
 				edit: {

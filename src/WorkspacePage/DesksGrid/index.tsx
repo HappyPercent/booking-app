@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../client/api';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 export const DesksGrid = ({
 	data = [],
@@ -28,6 +29,10 @@ export const DesksGrid = ({
 		}
 	);
 
+	const { mutate: deleteDesk } = useMutation(api.deleteDesk, {
+		onSuccess: () => queryClient.invalidateQueries(['desks']),
+	});
+
 	return (
 		<>
 			<NewDeskDialog open={open} onClose={() => setOpen(false)} />
@@ -41,6 +46,9 @@ export const DesksGrid = ({
 							onClick={() => onDeskClick(item.desk.id)}
 						>
 							{item.desk.name}
+							<IconButton onClick={() => deleteDesk(item.desk.id)}>
+								<DeleteOutlineIcon />
+							</IconButton>
 						</Typography>
 						{!!item.proposals?.length && (
 							<List>

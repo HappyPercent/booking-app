@@ -27,6 +27,16 @@ class Api extends HttpClient {
 			...params,
 		});
 
+	deleteDesk = (deskId: number, params: RequestParams = {}) =>
+		this.request<void, any>({
+			path: `/desk`,
+			method: 'DELETE',
+			query: {
+				deskId,
+			},
+			...params,
+		});
+
 	createService = (
 		data: {
 			name: string;
