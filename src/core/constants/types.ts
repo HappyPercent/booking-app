@@ -8,6 +8,7 @@ export interface IService {
 }
 
 export interface IPricePack {
+	id: number;
 	duration: number;
 	price: number;
 	currency: string;

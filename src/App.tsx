@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter, Navigate, redirect, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, LoaderFunctionArgs, Navigate, redirect, RouterProvider } from 'react-router-dom';
 import { LoginPage } from './LoginPage';
 import { ThemeProvider, createTheme } from '@mui/material';
 import { RegisterPage } from './RegisterPage';
@@ -8,6 +8,7 @@ import { WorkspacePage } from './WorkspacePage';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { AreYouPage } from './AreYouPage';
+import OwnerSchedulePage from './OwnerSchedulePage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import uk from 'date-fns/locale/en-GB';
@@ -70,6 +71,14 @@ const router = createBrowserRouter([
 				path: routesList.REGISTER,
 				element: <RegisterPage />,
 				loader: existentUserLoader,
+			},
+			{
+				path: 'owner/:ownerId',
+				element: <OwnerSchedulePage />,
+				loader: ({ params }) => {
+					if (!params.ownerId) return redirect(routesList.LOGIN);
+					return null;
+				},
 			},
 			{
 				path: '*',

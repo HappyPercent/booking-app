@@ -44,6 +44,7 @@ export const resources: Resource = {
 			Save: 'Save',
 			New: 'New',
 			desk: 'desk',
+			minutes: 'minutes',
 		},
 	},
 	'sr-RS': {
@@ -89,6 +90,7 @@ export const resources: Resource = {
 			Save: 'Сачувај',
 			New: 'Нови',
 			desk: 'сто',
+			minutes: 'минута',
 		},
 	},
 };

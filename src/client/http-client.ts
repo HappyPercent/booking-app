@@ -143,7 +143,7 @@ export class HttpClient<SecurityDataType = unknown> {
 		query,
 		format = 'json',
 		baseUrl = BASE_ROUTE,
-		auth = false,
+		auth = true,
 		...params
 	}: FullRequestParams): Promise<HttpResponse<T, E>> => {
 		const requestParams = this.mergeRequestParams(params);
@@ -155,7 +155,7 @@ export class HttpClient<SecurityDataType = unknown> {
 		const headers: HeadersInit = {
 			'Accept-Language': lang,
 		};
-		if (!auth) {
+		if (auth) {
 			headers.Authorization = `Basic ${btoa(`${user.username}:${user.password}` || '')}`;
 		}
 

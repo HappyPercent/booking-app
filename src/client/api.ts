@@ -14,7 +14,7 @@ class Api extends HttpClient {
 			path: `/user/login`,
 			method: 'POST',
 			body: data,
-			auth: true,
+			auth: false,
 			format: 'text',
 			...params,
 		});
@@ -130,7 +130,7 @@ class Api extends HttpClient {
 			path: `/user/register`,
 			method: 'POST',
 			body: data,
-			auth: true,
+			auth: false,
 			format: 'text',
 			...params,
 		});
@@ -248,6 +248,30 @@ class Api extends HttpClient {
 				deskId,
 			},
 			body: slots,
+			...params,
+		});
+
+	getDeskByOwner = (ownerId: string, params: RequestParams = {}) =>
+		this.request<BackendResponse<{ desk: IDesk; proposal: IService }[]>, any>({
+			path: `/search/owner/${ownerId}`,
+			method: 'GET',
+			query: {
+				page: 0,
+				size: 500,
+			},
+			auth: false,
+			...params,
+		});
+
+	getFreeSlotsByServicePricePack = (data: { ownerId: number; deskId: number; proposalId: number; pricePackId: number }, params: RequestParams = {}) =>
+		this.request<BackendResponse<ISlot[]>, any>({
+			path: `/search/slots`,
+			method: 'GET',
+			query: {
+				size: 500,
+				...data,
+			},
+			auth: false,
 			...params,
 		});
 }
