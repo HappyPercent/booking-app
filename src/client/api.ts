@@ -263,6 +263,14 @@ class Api extends HttpClient {
 			...params,
 		});
 
+	getDeskById = (deskId: string, params: RequestParams = {}) =>
+		this.request<BackendResponse<{ desk: IDesk; proposal: IService }[]>, any>({
+			path: `/search/desk/${deskId}`,
+			method: 'GET',
+			auth: false,
+			...params,
+		});
+
 	getFreeSlotsByServicePricePack = (data: { ownerId: number; deskId: number; proposalId: number; pricePackId: number }, params: RequestParams = {}) =>
 		this.request<BackendResponse<ISlot[]>, any>({
 			path: `/search/slots`,

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IDesk, IService } from '../../core/constants/types';
+import { IDesk, IService } from '../../../core/constants/types';
 import { Collapse, List, ListItemButton, ListItemText, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -43,7 +43,7 @@ const ListItem = ({
 	return (
 		<>
 			<ListItemButton key={`${desk.id}_${proposal.id}`} onClick={() => setOpen((state) => !state)}>
-				<ListItemText primary={proposal.name} />
+				<ListItemText primary={`${desk.name} - ${proposal.name}`} />
 				{open ? <ExpandLess /> : <ExpandMore />}
 			</ListItemButton>
 			<Collapse in={open} timeout='auto' unmountOnExit>

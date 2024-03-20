@@ -3,12 +3,12 @@ import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
 import { NewServiceDialog } from './NewServiceDialog';
 import { useState } from 'react';
-import { IService } from '../../core/constants/types';
+import { IService } from '../../../core/constants/types';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import { INewServiceDialogProps } from './NewServiceDialog/types';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import api from '../../client/api';
+import api from '../../../client/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const ServicesList = ({ data = [] }: { data: IService[] | undefined }) => {

@@ -1,5 +1,5 @@
 import { SelectChangeEvent } from '@mui/material';
-import { IService } from '../../../core/constants/types';
+import { IService } from '../../../../core/constants/types';
 
 export interface INewServiceDialogProps {
 	state: {

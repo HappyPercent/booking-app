@@ -9,7 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { DateSelectArg } from '@fullcalendar/core';
 import { useTranslation } from 'react-i18next';
-import { useCoreStore } from '../../core/store';
+import { useCoreStore } from '../../../core/store';
 import { endOfDay } from 'date-fns';
 import { produce } from 'immer';
 import CloseIcon from '@mui/icons-material/Close';

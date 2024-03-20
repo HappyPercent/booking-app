@@ -3,14 +3,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useEffect, useMemo, useState } from 'react';
-import { ICity, ICountry } from '../../../core/constants/types';
+import { ICity, ICountry } from '../../../../core/constants/types';
 
 import { WorkTimePicker } from '../../WorkTimePicker';
 import { DEFAULT_WORKING_DAYS } from '../../constants';
 import startOfToday from 'date-fns/startOfToday';
 import addWeeks from 'date-fns/addWeeks';
 import { IDeskDialogProps, IDeskFormValues } from './types';
-import api from '../../../client/api';
+import api from '../../../../client/api';
 import { useTranslation } from 'react-i18next';
 import { getEvents } from '../../WorkTimePicker/helpers/getEvents';
 

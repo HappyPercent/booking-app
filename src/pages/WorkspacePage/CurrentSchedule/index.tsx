@@ -1,14 +1,14 @@
 import FullCalendar from '@fullcalendar/react';
-import { useGetSlotsByDesk } from '../../core/hooks/useGetSlotsByDesk';
+import { useGetSlotsByDesk } from '../../../core/hooks/useGetSlotsByDesk';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useMemo, useRef, useState } from 'react';
-import { useCoreStore } from '../../core/store';
+import { useCoreStore } from '../../../core/store';
 import { useTranslation } from 'react-i18next';
 import { DateSelectArg } from '@fullcalendar/core';
 import endOfDay from 'date-fns/endOfDay';
 import { useMutation } from '@tanstack/react-query';
-import api from '../../client/api';
+import api from '../../../client/api';
 
 export const CurrentSchedule = ({ deskId }: { deskId: number }) => {
 	const calendarRef = useRef<FullCalendar | null>(null);

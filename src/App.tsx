@@ -1,14 +1,13 @@
-import React from 'react';
-import { createBrowserRouter, LoaderFunctionArgs, Navigate, redirect, RouterProvider } from 'react-router-dom';
-import { LoginPage } from './LoginPage';
+import { createBrowserRouter, Navigate, redirect, RouterProvider } from 'react-router-dom';
+import { LoginPage } from './pages/LoginPage';
 import { ThemeProvider, createTheme } from '@mui/material';
-import { RegisterPage } from './RegisterPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { LOCAL_STORAGE_USER_CREDENTIALS_LABEL, LOCAL_STORAGE_USER_SETTINGS_LABEL } from './core/constants/localStorage';
-import { WorkspacePage } from './WorkspacePage';
+import { WorkspacePage } from './pages/WorkspacePage';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { AreYouPage } from './AreYouPage';
-import OwnerSchedulePage from './OwnerSchedulePage';
+import { AreYouPage } from './pages/AreYouPage';
+import SchedulePage from './pages/SchedulePage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import uk from 'date-fns/locale/en-GB';
@@ -73,12 +72,8 @@ const router = createBrowserRouter([
 				loader: existentUserLoader,
 			},
 			{
-				path: 'owner/:ownerId',
-				element: <OwnerSchedulePage />,
-				loader: ({ params }) => {
-					if (!params.ownerId) return redirect(routesList.LOGIN);
-					return null;
-				},
+				path: routesList.SCHEDULE,
+				element: <SchedulePage />,
 			},
 			{
 				path: '*',

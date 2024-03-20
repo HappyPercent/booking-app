@@ -1,9 +1,9 @@
 import { Button, Chip, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ISelectedPricePack } from '../types';
-import { useGetFreeSlotsByServicePricePack } from '../../core/hooks/useGetFreeSlotsByServicePricePack';
+import { useGetFreeSlotsByServicePricePack } from '../../../core/hooks/useGetFreeSlotsByServicePricePack';
 import { useParams } from 'react-router-dom';
-import { ISlot } from '../../core/constants/types';
+import { ISlot } from '../../../core/constants/types';
 import { useEffect, useMemo, useState } from 'react';
 import format from 'date-fns/format';
 

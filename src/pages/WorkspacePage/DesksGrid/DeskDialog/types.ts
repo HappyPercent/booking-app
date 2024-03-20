@@ -1,4 +1,4 @@
-import { ICity, ICountry, IDesk } from '../../../core/constants/types';
+import { ICity, ICountry, IDesk } from '../../../../core/constants/types';
 
 export interface IDeskDialogProps {
 	state: { open: boolean; edit?: boolean; desk?: IDesk };

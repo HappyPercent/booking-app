@@ -14,12 +14,12 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Formik, FormikErrors } from 'formik';
 import * as Yup from 'yup';
-import api from '../../../client/api';
+import api from '../../../../client/api';
 import { useTranslation } from 'react-i18next';
-import { useGetCategories } from '../../../core/hooks/useGetCategories';
+import { useGetCategories } from '../../../../core/hooks/useGetCategories';
 import { INewServiceDialogProps, INewServiceFormData, ISubcategorySelectProps } from './types';
 import AddIcon from '@mui/icons-material/Add';
-import { useCurrencyAll } from '../../../core/hooks/useCurrencyAll';
+import { useCurrencyAll } from '../../../../core/hooks/useCurrencyAll';
 
 const schema = Yup.object().shape({
 	name: Yup.string().required('Required'),

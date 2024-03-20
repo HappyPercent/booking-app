@@ -1,10 +1,10 @@
 import { Button, Divider, IconButton, List, ListItem, MenuItem, Select, Stack, Typography } from '@mui/material';
-import { IDesk, IService } from '../../core/constants/types';
+import { IDesk, IService } from '../../../core/constants/types';
 import { useMemo, useState } from 'react';
 import { DeskDialog } from './DeskDialog';
-import { useGetServices } from '../../core/hooks/useGetServices';
+import { useGetServices } from '../../../core/hooks/useGetServices';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../../client/api';
+import api from '../../../client/api';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';

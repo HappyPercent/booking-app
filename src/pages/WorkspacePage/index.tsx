@@ -2,9 +2,9 @@ import { Box, Grid } from '@mui/material';
 import { ServicesList } from './ServicesList';
 import { DesksGrid } from './DesksGrid';
 import { useMemo, useState } from 'react';
-import { IDesk, IService } from '../core/constants/types';
-import { useGetServices } from '../core/hooks/useGetServices';
-import { useGetDesks } from '../core/hooks/useGetDesks';
+import { IDesk, IService } from '../../core/constants/types';
+import { useGetServices } from '../../core/hooks/useGetServices';
+import { useGetDesks } from '../../core/hooks/useGetDesks';
 import { CurrentSchedule } from './CurrentSchedule';
 import { useTranslation } from 'react-i18next';
 

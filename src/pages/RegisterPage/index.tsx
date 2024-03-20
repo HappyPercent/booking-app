@@ -3,21 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { FormValues } from './types';
-import { LOCAL_STORAGE_USER_CREDENTIALS_LABEL } from '../core/constants/localStorage';
+import { LOCAL_STORAGE_USER_CREDENTIALS_LABEL } from '../../core/constants/localStorage';
 import { useMutation } from '@tanstack/react-query';
-import api from '../client/api';
+import api from '../../client/api';
 import { useTranslation } from 'react-i18next';
-import { routesList } from '../routes/routesList';
+import { routesList } from '../../routes/routesList';
 
 const schema = Yup.object().shape({
 	username: Yup.string().email('Invalid email').required('Required'),
 	password: Yup.string().min(6, 'Min lenght - 6 characters').required('Required'),
 });
 
-export const LoginPage = () => {
+export const RegisterPage = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const { mutateAsync: login } = useMutation((values: FormValues) => api.loginUser(values), {
+	const { mutateAsync: register } = useMutation((values: FormValues) => api.createUser(values), {
 		onSuccess: (res, values) => {
 			if (res.ok) {
 				localStorage.setItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL, JSON.stringify(values));
@@ -27,12 +27,12 @@ export const LoginPage = () => {
 			}
 		},
 		onError: (error) => {
-			window.alert('Something went wrong. Please try again. Error code - ' + error);
+			window.alert(error);
 		},
 	});
 
 	const handleSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
-		await login(values);
+		await register(values);
 		setSubmitting(false);
 	};
 
@@ -49,7 +49,7 @@ export const LoginPage = () => {
 						}}
 					>
 						<Typography component='h1' variant='h5'>
-							{t('Sign in')}
+							{t('Sign up')}
 						</Typography>
 						<Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
 							<TextField
@@ -60,7 +60,6 @@ export const LoginPage = () => {
 								label={t('Email Address')}
 								name='username'
 								autoComplete='email'
-								autoFocus
 								value={values.username}
 								onChange={handleChange}
 								error={!!touched.username && !!errors.username}
@@ -80,22 +79,17 @@ export const LoginPage = () => {
 								error={!!touched.password && !!errors.password}
 								helperText={!!touched.password && errors.password}
 							/>
-							{/* <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              /> */}
 							<Button disabled={isSubmitting} type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-								{t('Sign in')}
+								{t('Sign up')}
 							</Button>
-
 							<Link
 								sx={{
 									cursor: 'pointer',
 								}}
-								onClick={() => navigate('/register')}
+								onClick={() => navigate('/login')}
 								variant='body2'
 							>
-								{t("Don't have an account")}? {t('Sign up')}
+								{t('Already registered')}? {t('Sign in')}
 							</Link>
 						</Box>
 					</Box>
