@@ -1,5 +1,7 @@
+import { IPricePack } from '../../core/constants/types';
+
 export interface ISelectedPricePack {
 	deskId: number;
 	proposalId: number;
-	pricePackId: number;
+	pricePack: Partial<IPricePack>;
 }

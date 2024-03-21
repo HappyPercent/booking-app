@@ -12,12 +12,12 @@ export default function SchedulePage() {
 	const { data: dataByOwner, isFetching: isOwnerLoading } = useGetDeskByOwner(ownerId as string);
 	const { data: dataById, isFetching: isDeskLoading } = useGetDeskById(deskId as string);
 	const [selectedPack, setSelectedPack] = useState<ISelectedPricePack | undefined>(
-		deskId && serviceId && packId ? { deskId: Number(deskId), proposalId: Number(serviceId), pricePackId: Number(packId) } : undefined
+		deskId && serviceId && packId ? { deskId: Number(deskId), proposalId: Number(serviceId), pricePack: { id: Number(packId) } } : undefined
 	);
 
 	useEffect(() => {
 		if (deskId && serviceId && packId) {
-			setSelectedPack({ deskId: Number(deskId), proposalId: Number(serviceId), pricePackId: Number(packId) });
+			setSelectedPack({ deskId: Number(deskId), proposalId: Number(serviceId), pricePack: { id: Number(packId) } });
 		}
 	}, [deskId, packId, serviceId]);
 
@@ -62,7 +62,7 @@ export default function SchedulePage() {
 					xs={6}
 					lg={9}
 				>
-					<SlotsPicker selectedPack={selectedPack} />
+					{!!selectedPack && <SlotsPicker selectedPack={selectedPack} />}
 				</Grid>
 			</Grid>
 		</Box>

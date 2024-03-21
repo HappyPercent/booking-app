@@ -7,22 +7,31 @@ import { ISlot } from '../../../core/constants/types';
 import { useEffect, useMemo, useState } from 'react';
 import format from 'date-fns/format';
 
-export const SlotsPicker = ({ selectedPack }: { selectedPack?: ISelectedPricePack }) => {
+export const SlotsPicker = ({ selectedPack }: { selectedPack: ISelectedPricePack }) => {
 	const { t } = useTranslation();
 	const { ownerId } = useParams();
 	const { data: freeSlots, isLoading: isFreeSlotsLoading } = useGetFreeSlotsByServicePricePack(
-		selectedPack
+		selectedPack.pricePack.id
 			? {
 					ownerId: Number(ownerId),
-					...selectedPack,
+					deskId: selectedPack.deskId,
+					proposalId: selectedPack.proposalId,
+					pricePackId: selectedPack.pricePack.id,
 			  }
 			: undefined
 	);
 	const [selectedDate, setSelectedDate] = useState<string | undefined>();
+	const serviceTimes = (selectedPack.pricePack.duration || 0) / 15;
 
 	const slotDisplayData = useMemo(
 		() =>
 			freeSlots?.reduce((curr: { [key: string]: ISlot[] }, next) => {
+				for (let i = 1; i < serviceTimes; i++) {
+					const nextFreeTime = freeSlots.find(
+						(slot) => Number(new Date(slot.dateTimeStart)) === Number(new Date(next.dateTimeStart)) + 15 * 60 * 1000 * i
+					);
+					if (!nextFreeTime) return curr;
+				}
 				const day = next.dateTimeStart.split('T')[0];
 				if (curr[day]) {
 					curr[day].push(next);
@@ -31,7 +40,7 @@ export const SlotsPicker = ({ selectedPack }: { selectedPack?: ISelectedPricePac
 				}
 				return curr;
 			}, {}),
-		[freeSlots]
+		[freeSlots, serviceTimes]
 	);
 
 	const handlePrevDateClick = () => {

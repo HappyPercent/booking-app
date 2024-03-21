@@ -52,9 +52,9 @@ const ListItem = ({
 						<ListItemButton
 							sx={{ pl: 4 }}
 							selected={
-								selectedPricePack?.pricePackId === pack.id && desk.id === selectedPricePack.deskId && proposal.id === selectedPricePack.proposalId
+								selectedPricePack?.pricePack.id === pack.id && desk.id === selectedPricePack.deskId && proposal.id === selectedPricePack.proposalId
 							}
-							onClick={() => onSelect({ deskId: desk.id, proposalId: proposal.id, pricePackId: pack.id })}
+							onClick={() => onSelect({ deskId: desk.id, proposalId: proposal.id, pricePack: pack })}
 						>
 							<ListItemText>
 								{pack.duration} {t('minutes')} - {pack.price} {pack.currency}
