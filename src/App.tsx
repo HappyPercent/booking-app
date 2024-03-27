@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate, redirect, RouterProvider } from 'react-r
 import { LoginPage } from './pages/LoginPage';
 import { ThemeProvider, createTheme } from '@mui/material';
 import { RegisterPage } from './pages/RegisterPage';
-import { LOCAL_STORAGE_USER_CREDENTIALS_LABEL, LOCAL_STORAGE_USER_SETTINGS_LABEL } from './core/constants/localStorage';
+import { LOCAL_STORAGE_USER_SETTINGS_LABEL } from './core/constants/localStorage';
 import { WorkspacePage } from './pages/WorkspacePage';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -17,6 +17,7 @@ import { useCoreStore } from './core/store';
 
 //i18n always last
 import i18n from './i18n';
+import { isUserLoggedIn } from './core/helpers/isUserLoggedIn';
 
 const queryClient = new QueryClient();
 const defaultTheme = createTheme();
@@ -31,16 +32,14 @@ useCoreStore.subscribe(
 );
 
 const noUserLoader = () => {
-	const credentials = JSON.parse(localStorage.getItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL) || '{}');
-	if (!credentials.username || !credentials.password) {
+	if (!isUserLoggedIn()) {
 		return redirect(routesList.LOGIN);
 	}
 	return null;
 };
 
 const existentUserLoader = () => {
-	const credentials = JSON.parse(localStorage.getItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL) || '{}');
-	if (credentials.username && credentials.password) {
+	if (isUserLoggedIn()) {
 		return redirect(routesList.WORKSPACE);
 	}
 	return null;

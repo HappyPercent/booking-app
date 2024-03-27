@@ -2,7 +2,7 @@ import { Button, Chip, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ISelectedPricePack } from '../types';
 import { useGetFreeSlotsByServicePricePack } from '../../../core/hooks/useGetFreeSlotsByServicePricePack';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { ISlot } from '../../../core/constants/types';
 import { useEffect, useMemo, useState } from 'react';
 import format from 'date-fns/format';
@@ -22,6 +22,7 @@ export const SlotsPicker = ({ selectedPack }: { selectedPack: ISelectedPricePack
 	);
 	const [selectedDate, setSelectedDate] = useState<string | undefined>();
 	const serviceTimes = (selectedPack.pricePack.duration || 0) / 15;
+	const [query, setQuery] = useSearchParams();
 
 	const slotDisplayData = useMemo(
 		() =>
@@ -63,6 +64,22 @@ export const SlotsPicker = ({ selectedPack }: { selectedPack: ISelectedPricePack
 		}
 	};
 
+	const handleSlotClick = (slot: ISlot) => {
+		const slotsIds = [slot.id];
+		if (serviceTimes > 1) {
+			for (let i = 1; i < serviceTimes; i++) {
+				const nextFreeTime = freeSlots?.find(
+					(freeSlot) => Number(new Date(freeSlot.dateTimeStart)) === Number(new Date(slot.dateTimeStart)) + 15 * 60 * 1000 * i
+				);
+				if (nextFreeTime) {
+					slotsIds.push(nextFreeTime.id);
+				}
+			}
+		}
+		query.set('booking', JSON.stringify({ slotsIds }));
+		setQuery(query);
+	};
+
 	useEffect(() => {
 		if (slotDisplayData) {
 			setSelectedDate(Object.keys(slotDisplayData)[0]);
@@ -85,7 +102,7 @@ export const SlotsPicker = ({ selectedPack }: { selectedPack: ISelectedPricePack
 			{!!selectedDate && (
 				<Stack spacing={1} direction='row' flexWrap='wrap' gap={1}>
 					{slotDisplayData?.[selectedDate].map((slot) => (
-						<Chip clickable key={slot.id} label={format(new Date(slot.dateTimeStart), 'Pp')} />
+						<Chip onClick={() => handleSlotClick(slot)} clickable key={slot.id} label={format(new Date(slot.dateTimeStart), 'Pp')} />
 					))}
 				</Stack>
 			)}
