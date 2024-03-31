@@ -90,7 +90,7 @@ export const CurrentSchedule = ({ deskId }: { deskId: number }) => {
 			forceEventDuration={true}
 			eventClick={(event) => isEdit && event.event.remove()}
 			select={handleSelect}
-			initialEvents={calendarData}
+			events={calendarData}
 			slotDuration={'00:15:00'}
 			plugins={[timeGridPlugin, interactionPlugin]}
 			allDaySlot={false}

@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material';
 import { ServicesList } from './ServicesList';
 import { DesksGrid } from './DesksGrid';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { IDesk, IService } from '../../core/constants/types';
 import { useGetServices } from '../../core/hooks/useGetServices';
 import { useGetDesks } from '../../core/hooks/useGetDesks';
@@ -27,6 +27,12 @@ export const WorkspacePage = () => {
 		});
 		return output;
 	}, [desks]);
+
+	useEffect(() => {
+		if (selectedDesk && !deskGridData[selectedDesk]) {
+			setSelectedDesk(null);
+		}
+	}, [deskGridData, selectedDesk]);
 
 	if (isDesksLoading || isServicesLoading) {
 		return <div>{t('Loading')}...</div>;
