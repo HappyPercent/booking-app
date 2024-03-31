@@ -1,5 +1,5 @@
 import { Box, Button, Container, Link, TextField, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { FormValues } from './types';
@@ -17,11 +17,13 @@ const schema = Yup.object().shape({
 export const LoginPage = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const [query] = useSearchParams();
 	const { mutateAsync: login } = useMutation((values: FormValues) => api.loginUser(values), {
 		onSuccess: (res, values) => {
 			if (res.ok) {
 				localStorage.setItem(LOCAL_STORAGE_USER_CREDENTIALS_LABEL, JSON.stringify(values));
-				navigate(routesList.WORKSPACE);
+				const returnUrl = query.get('returnUrl') || routesList.WORKSPACE;
+				navigate(returnUrl);
 			} else {
 				throw new Error(res.error);
 			}

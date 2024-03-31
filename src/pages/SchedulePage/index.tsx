@@ -7,6 +7,7 @@ import { ISelectedPricePack } from './types';
 import { SlotsPicker } from './SlotsPicker';
 import { useGetDeskById } from '../../core/hooks/useGetDeskById';
 import { BookingDialog } from './BookingDialog';
+import { useGetFreeSlotsByServicePricePack } from '../../core/hooks/useGetFreeSlotsByServicePricePack';
 
 export default function SchedulePage() {
 	const { ownerId, deskId, serviceId, packId } = useParams();
@@ -15,6 +16,17 @@ export default function SchedulePage() {
 	const [selectedPack, setSelectedPack] = useState<ISelectedPricePack | undefined>(
 		deskId && serviceId && packId ? { deskId: Number(deskId), proposalId: Number(serviceId), pricePack: { id: Number(packId) } } : undefined
 	);
+	const { data: freeSlots, isLoading: isFreeSlotsLoading } = useGetFreeSlotsByServicePricePack(
+		selectedPack?.pricePack.id
+			? {
+					ownerId: Number(ownerId),
+					deskId: selectedPack.deskId,
+					proposalId: selectedPack.proposalId,
+					pricePackId: selectedPack.pricePack.id,
+			  }
+			: undefined
+	);
+	const serviceTimes = (selectedPack?.pricePack.duration || 0) / 15;
 
 	useEffect(() => {
 		if (deskId && serviceId && packId) {
@@ -26,14 +38,16 @@ export default function SchedulePage() {
 
 	return (
 		<>
-			<BookingDialog
-				data={{
-					ownerId: ownerId as string,
-					deskId: deskId as string,
-					proposakId: serviceId as string,
-					pricePackId: packId as string,
-				}}
-			/>
+			{!!ownerId && (
+				<BookingDialog
+					data={{
+						ownerId: Number(ownerId),
+						deskId: selectedPack?.deskId || 0,
+						proposalId: selectedPack?.proposalId || 0,
+						pricePack: selectedPack?.pricePack || { id: 0 },
+					}}
+				/>
+			)}
 			<Box
 				sx={{
 					display: 'flex',
@@ -72,7 +86,7 @@ export default function SchedulePage() {
 						xs={6}
 						lg={9}
 					>
-						{!!selectedPack && <SlotsPicker selectedPack={selectedPack} />}
+						{!isFreeSlotsLoading && !!selectedPack && <SlotsPicker serviceTimes={serviceTimes} freeSlots={freeSlots} />}
 					</Grid>
 				</Grid>
 			</Box>

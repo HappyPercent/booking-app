@@ -282,6 +282,20 @@ class Api extends HttpClient {
 			auth: false,
 			...params,
 		});
+
+	bookSlot = (data: { ownerId: number; deskId: number; proposalId: number; pricePackId: number; slotsIds: string[] }, params: RequestParams = {}) =>
+		this.request<BackendResponse<string>, any>({
+			path: `/booking/book`,
+			method: 'POST',
+			body: data.slotsIds,
+			query: {
+				ownerId: data.ownerId,
+				deskId: data.deskId,
+				proposalId: data.proposalId,
+				pricePackId: data.pricePackId,
+			},
+			...params,
+		});
 }
 
 const api = new Api();

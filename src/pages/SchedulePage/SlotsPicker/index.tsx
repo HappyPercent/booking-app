@@ -1,27 +1,13 @@
 import { Button, Chip, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { ISelectedPricePack } from '../types';
-import { useGetFreeSlotsByServicePricePack } from '../../../core/hooks/useGetFreeSlotsByServicePricePack';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { ISlot } from '../../../core/constants/types';
 import { useEffect, useMemo, useState } from 'react';
 import format from 'date-fns/format';
 
-export const SlotsPicker = ({ selectedPack }: { selectedPack: ISelectedPricePack }) => {
+export const SlotsPicker = ({ serviceTimes, freeSlots }: { serviceTimes: number; freeSlots?: ISlot[] }) => {
 	const { t } = useTranslation();
-	const { ownerId } = useParams();
-	const { data: freeSlots, isLoading: isFreeSlotsLoading } = useGetFreeSlotsByServicePricePack(
-		selectedPack.pricePack.id
-			? {
-					ownerId: Number(ownerId),
-					deskId: selectedPack.deskId,
-					proposalId: selectedPack.proposalId,
-					pricePackId: selectedPack.pricePack.id,
-			  }
-			: undefined
-	);
 	const [selectedDate, setSelectedDate] = useState<string | undefined>();
-	const serviceTimes = (selectedPack.pricePack.duration || 0) / 15;
 	const [query, setQuery] = useSearchParams();
 
 	const slotDisplayData = useMemo(
@@ -91,7 +77,7 @@ export const SlotsPicker = ({ selectedPack }: { selectedPack: ISelectedPricePack
 	return (
 		<Stack spacing={2}>
 			<Typography variant='h6'>{t('Free slots')}</Typography>
-			{!isFreeSlotsLoading && freeSlots.length === 0 && <Typography>{t('No free slots')}</Typography>}
+			{freeSlots.length === 0 && <Typography>{t('No free slots')}</Typography>}
 			{!!selectedDate && (
 				<Stack spacing={1} direction='row' alignItems='center'>
 					<Button onClick={handlePrevDateClick}>Prev</Button>
