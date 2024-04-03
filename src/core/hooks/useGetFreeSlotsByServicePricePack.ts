@@ -6,6 +6,6 @@ export const useGetFreeSlotsByServicePricePack = (data?: { ownerId: number; desk
 		queryKey: ['freeSlots', data?.ownerId, data?.deskId, data?.proposalId, data?.pricePackId],
 		queryFn: () => (data ? api.getFreeSlotsByServicePricePack(data) : undefined),
 		refetchOnWindowFocus: false,
-		select: (data) => data?.data?.data?.content,
+		select: (data) => data?.data,
 		enabled: !!data,
 	});

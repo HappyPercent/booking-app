@@ -16,7 +16,8 @@ export default function SchedulePage() {
 	const [selectedPack, setSelectedPack] = useState<ISelectedPricePack | undefined>(
 		deskId && serviceId && packId ? { deskId: Number(deskId), proposalId: Number(serviceId), pricePack: { id: Number(packId) } } : undefined
 	);
-	const { data: freeSlots, isLoading: isFreeSlotsLoading } = useGetFreeSlotsByServicePricePack(
+
+	const { data, isLoading: isFreeSlotsLoading } = useGetFreeSlotsByServicePricePack(
 		selectedPack?.pricePack.id
 			? {
 					ownerId: Number(ownerId),
@@ -26,8 +27,7 @@ export default function SchedulePage() {
 			  }
 			: undefined
 	);
-	const serviceTimes = (selectedPack?.pricePack.duration || 0) / 15;
-
+	const serviceTimes = (selectedPack?.pricePack.duration || data?.pricePack.duration || 0) / 15;
 	useEffect(() => {
 		if (deskId && serviceId && packId) {
 			setSelectedPack({ deskId: Number(deskId), proposalId: Number(serviceId), pricePack: { id: Number(packId) } });
@@ -86,7 +86,7 @@ export default function SchedulePage() {
 						xs={6}
 						lg={9}
 					>
-						{!isFreeSlotsLoading && !!selectedPack && <SlotsPicker serviceTimes={serviceTimes} freeSlots={freeSlots} />}
+						{!isFreeSlotsLoading && !!selectedPack && <SlotsPicker serviceTimes={serviceTimes} freeSlots={data?.data?.content} />}
 					</Grid>
 				</Grid>
 			</Box>

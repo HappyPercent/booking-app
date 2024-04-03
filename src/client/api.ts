@@ -1,4 +1,4 @@
-import { ICategory, ICity, ICountry, IDesk, IService, ISlot } from '../core/constants/types';
+import { ICategory, ICity, ICountry, IDesk, IPricePack, IService, ISlot } from '../core/constants/types';
 import { HttpClient, RequestParams } from './http-client';
 import { BackendResponse } from './types';
 
@@ -272,7 +272,7 @@ class Api extends HttpClient {
 		});
 
 	getFreeSlotsByServicePricePack = (data: { ownerId: number; deskId: number; proposalId: number; pricePackId: number }, params: RequestParams = {}) =>
-		this.request<BackendResponse<ISlot[]>, any>({
+		this.request<{ desk: IDesk; proposal: IService; pricePack: IPricePack } & BackendResponse<ISlot[]>, any>({
 			path: `/search/slots`,
 			method: 'GET',
 			query: {
