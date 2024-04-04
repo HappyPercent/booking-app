@@ -6,7 +6,6 @@ import { LOCAL_STORAGE_USER_SETTINGS_LABEL } from './core/constants/localStorage
 import { WorkspacePage } from './pages/WorkspacePage';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { AreYouPage } from './pages/AreYouPage';
 import SchedulePage from './pages/SchedulePage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -50,11 +49,6 @@ const router = createBrowserRouter([
 		path: routesList.BASE,
 		element: <Layout />,
 		children: [
-			{
-				path: routesList.BASE,
-				element: <AreYouPage />,
-				loader: existentUserLoader,
-			},
 			{
 				path: routesList.WORKSPACE,
 				element: <WorkspacePage />,
