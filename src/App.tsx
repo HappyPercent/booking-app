@@ -69,6 +69,10 @@ const router = createBrowserRouter([
 				element: <SchedulePage />,
 			},
 			{
+				path: '/',
+				element: <Navigate to={routesList.LOGIN} replace />,
+			},
+			{
 				path: '*',
 				element: <Navigate to={routesList.LOGIN} replace />,
 			},
