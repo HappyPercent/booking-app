@@ -45,6 +45,8 @@ export const resources: Resource = {
 			New: 'New',
 			desk: 'desk',
 			minutes: 'minutes',
+			'Do you want to confirm this booking': 'Do you want to confirm this booking',
+			Decline: 'Decline',
 		},
 	},
 	'sr-RS': {
@@ -91,6 +93,8 @@ export const resources: Resource = {
 			New: 'Нови',
 			desk: 'сто',
 			minutes: 'минута',
+			'Do you want to confirm this booking': 'Да ли желите да потврдите ову резервацију',
+			Decline: 'Одбиј',
 		},
 	},
 };

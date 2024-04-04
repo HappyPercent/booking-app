@@ -57,3 +57,19 @@ export interface ICategory {
 	description?: string;
 	root?: ICategory;
 }
+
+export interface IUser {
+	dateCreated: string;
+	id: number;
+	name: string;
+	username: string;
+}
+
+export interface IBooking {
+	dateCreated: string;
+	id: number;
+	pricePack: IPricePack;
+	status: string;
+	user: IUser;
+	proposal: IService;
+}

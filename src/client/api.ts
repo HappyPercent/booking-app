@@ -1,4 +1,4 @@
-import { ICategory, ICity, ICountry, IDesk, IPricePack, IService, ISlot } from '../core/constants/types';
+import { IBooking, ICategory, ICity, ICountry, IDesk, IPricePack, IService, ISlot } from '../core/constants/types';
 import { HttpClient, RequestParams } from './http-client';
 import { BackendResponse } from './types';
 
@@ -157,7 +157,7 @@ class Api extends HttpClient {
 		});
 
 	getSlotsByDesk = (deskId: number, params: RequestParams = {}) =>
-		this.request<BackendResponse<{ slot: ISlot; desk: IDesk }[]>, any>({
+		this.request<BackendResponse<{ slot: ISlot; desk: IDesk; booking: IBooking }[]>, any>({
 			path: `/slot`,
 			method: 'GET',
 			query: {
@@ -294,6 +294,22 @@ class Api extends HttpClient {
 				proposalId: data.proposalId,
 				pricePackId: data.pricePackId,
 			},
+			...params,
+		});
+
+	declineBooking = (bookingIds: number[], params: RequestParams = {}) =>
+		this.request<BackendResponse<string>, any>({
+			path: `/booking/decline`,
+			method: 'POST',
+			body: bookingIds,
+			...params,
+		});
+
+	confirmBooking = (bookingIds: number[], params: RequestParams = {}) =>
+		this.request<BackendResponse<string>, any>({
+			path: `/booking/confirm`,
+			method: 'POST',
+			body: bookingIds,
 			...params,
 		});
 }
