@@ -1,7 +1,7 @@
 import { LOCAL_STORAGE_USER_CREDENTIALS_LABEL } from '../core/constants/localStorage';
 import { BASE_ROUTE } from '../core/constants/requestRoutes';
 import { useCoreStore } from '../core/store';
-import { routesList } from '../routes/routesList';
+import { routesList } from '../routes/list';
 
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, 'body' | 'bodyUsed'>;

@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { isUserLoggedIn } from '../../../core/helpers/isUserLoggedIn';
-import { routesList } from '../../../routes/routesList';
+import { routesList } from '../../../routes/list';
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../../client/api';

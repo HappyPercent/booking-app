@@ -7,7 +7,7 @@ import { LOCAL_STORAGE_USER_CREDENTIALS_LABEL } from '../../core/constants/local
 import { useMutation } from '@tanstack/react-query';
 import api from '../../client/api';
 import { useTranslation } from 'react-i18next';
-import { routesList } from '../../routes/routesList';
+import { routesList } from '../../routes/list';
 
 const schema = Yup.object().shape({
 	username: Yup.string().email('Invalid email').required('Required'),
