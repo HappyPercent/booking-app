@@ -27,13 +27,7 @@ export const Layout = () => {
 	};
 
 	return (
-		<Container
-			component='main'
-			maxWidth='lg'
-			sx={{
-				pb: 4,
-			}}
-		>
+		<Box display={'flex'} component='main' width='100vw' minWidth='100vw' minHeight={'100vh'} pb={10}>
 			<Box position={'absolute'} bottom={'40px'} left={'40px'} display={'flex'} flexDirection={'column'} gap={2}>
 				<Select
 					value={LANGUAGES.find((l) => l.name === userLang)?.name}
@@ -54,6 +48,6 @@ export const Layout = () => {
 				)}
 			</Box>
 			<Outlet />
-		</Container>
+		</Box>
 	);
 };

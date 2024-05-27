@@ -1,4 +1,4 @@
-import { Box, Button, Container, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Card, Container, InputLabel, Link, Stack, TextField, Typography } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
@@ -39,70 +39,86 @@ export const LoginPage = () => {
 	};
 
 	return (
-		<Formik initialValues={{ username: '', password: '' }} onSubmit={handleSubmit} validationSchema={schema}>
-			{({ values, handleSubmit, handleChange, isSubmitting, errors, touched }) => (
-				<Container component='main' maxWidth='xs'>
-					<Box
-						sx={{
-							marginTop: 8,
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-						}}
-					>
-						<Typography component='h1' variant='h5'>
-							{t('Sign in')}
-						</Typography>
-						<Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-							<TextField
-								margin='normal'
-								required
-								fullWidth
-								id='username'
-								label={t('Email Address')}
-								name='username'
-								autoComplete='email'
-								autoFocus
-								value={values.username}
-								onChange={handleChange}
-								error={!!touched.username && !!errors.username}
-								helperText={!!touched.username && errors.username}
-							/>
-							<TextField
-								margin='normal'
-								required
-								fullWidth
-								name='password'
-								label={t('Password')}
-								type='password'
-								id='password'
-								autoComplete='current-password'
-								value={values.password}
-								onChange={handleChange}
-								error={!!touched.password && !!errors.password}
-								helperText={!!touched.password && errors.password}
-							/>
-							{/* <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              /> */}
-							<Button disabled={isSubmitting} type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
+		<Box margin={'auto'}>
+			<Container component='main' maxWidth='xs'>
+				<Formik initialValues={{ username: '', password: '' }} onSubmit={handleSubmit} validationSchema={schema}>
+					{({ values, handleSubmit, handleChange, isSubmitting, errors, touched }) => (
+						<Card
+							elevation={0}
+							sx={{
+								padding: '20px',
+								display: 'flex',
+								flexDirection: 'column',
+								alignItems: 'center',
+								gap: '24px',
+								width: '450px',
+							}}
+						>
+							<Typography component='h1' variant='h4' fontWeight={600}>
+								{t('Sign in')}
+							</Typography>
+							<Stack direction={'row'} justifyContent={'center'} gap={1}>
+								<Typography>{t("Don't have an account")}?</Typography>
+								<Link
+									sx={{
+										cursor: 'pointer',
+									}}
+									onClick={() => navigate('/register')}
+									variant='body1'
+								>
+									{t('Sign up')}
+								</Link>
+							</Stack>
+							<Stack spacing={1} alignSelf='stretch'>
+								<Typography>{t('Email')}</Typography>
+								<TextField
+									size='small'
+									margin='normal'
+									required
+									fullWidth
+									id='username'
+									placeholder={t('Enter your email')}
+									name='username'
+									autoComplete='email'
+									autoFocus
+									value={values.username}
+									onChange={handleChange}
+									error={!!touched.username && !!errors.username}
+									helperText={!!touched.username && errors.username}
+								/>
+							</Stack>
+							<Stack spacing={1} alignSelf='stretch'>
+								<Typography>{t('Password')}</Typography>
+								<TextField
+									size='small'
+									margin='normal'
+									required
+									fullWidth
+									name='password'
+									placeholder={t('Enter your password')}
+									type='password'
+									id='password'
+									autoComplete='current-password'
+									value={values.password}
+									onChange={handleChange}
+									error={!!touched.password && !!errors.password}
+									helperText={!!touched.password && errors.password}
+								/>
+							</Stack>
+							<Button
+								disableElevation
+								size='large'
+								disabled={isSubmitting}
+								onClick={() => handleSubmit()}
+								variant='contained'
+								sx={{ mt: 3, alignSelf: 'flex-end', textTransform: 'none' }}
+							>
 								{t('Sign in')}
 							</Button>
-
-							<Link
-								sx={{
-									cursor: 'pointer',
-								}}
-								onClick={() => navigate('/register')}
-								variant='body2'
-							>
-								{t("Don't have an account")}? {t('Sign up')}
-							</Link>
-						</Box>
-					</Box>
-				</Container>
-			)}
-		</Formik>
+						</Card>
+					)}
+				</Formik>
+			</Container>
+		</Box>
 	);
 };
