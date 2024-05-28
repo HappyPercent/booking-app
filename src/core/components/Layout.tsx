@@ -1,4 +1,4 @@
-import { Box, Container, MenuItem, Select, Typography } from '@mui/material';
+import { Box, MenuItem, Select, Typography } from '@mui/material';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ export const Layout = () => {
 	};
 
 	return (
-		<Box display={'flex'} component='main' width='100vw' minWidth='100vw' minHeight={'100vh'} pb={10}>
+		<Box display={'flex'} component='main' width='100vw' minWidth='100vw' minHeight={'100vh'} pb={10} position={'relative'}>
 			<Box position={'absolute'} bottom={'40px'} left={'40px'} display={'flex'} flexDirection={'column'} gap={2}>
 				<Select
 					value={LANGUAGES.find((l) => l.name === userLang)?.name}

@@ -1,42 +1,15 @@
-import { Box, Grid } from '@mui/material';
-import { ServicesList } from './ServicesList';
-import { DesksGrid } from './DesksGrid';
-import { useEffect, useMemo, useState } from 'react';
-import { IDesk, IService } from '../../core/constants/types';
+import { Box, CircularProgress } from '@mui/material';
 import { useGetServices } from '../../core/hooks/useGetServices';
 import { useGetDesks } from '../../core/hooks/useGetDesks';
-import { CurrentSchedule } from './CurrentSchedule';
-import { useTranslation } from 'react-i18next';
+import { OnboardingWizard } from './OnboardingWizard';
 
 export const WorkspacePage = () => {
-	const { t } = useTranslation();
-	const [selectedDesk, setSelectedDesk] = useState<number | null>(null); // [1
 	const { data: services, isLoading: isServicesLoading } = useGetServices();
 	const { data: desks, isLoading: isDesksLoading } = useGetDesks();
-	const deskGridData = useMemo(() => {
-		const output: { [key in IDesk['id']]: { desk: IDesk; proposals: IService[] } } = {};
-		desks?.forEach((item: { desk: IDesk; proposal: IService }) => {
-			if (output[item.desk.id]) {
-				output[item.desk.id].proposals.push(item.proposal);
-			} else {
-				output[item.desk.id] = {
-					desk: { ...item.desk },
-					proposals: item.proposal ? [item.proposal] : [],
-				};
-			}
-		});
-		return output;
-	}, [desks]);
 
-	useEffect(() => {
-		if (selectedDesk && !deskGridData[selectedDesk]) {
-			setSelectedDesk(null);
-		}
-	}, [deskGridData, selectedDesk]);
+	if (isDesksLoading || isServicesLoading) return <CircularProgress />;
 
-	if (isDesksLoading || isServicesLoading) {
-		return <div>{t('Loading')}...</div>;
-	}
+	if (!desks?.length || !services?.length) return <OnboardingWizard />;
 
 	return (
 		<Box
@@ -48,41 +21,6 @@ export const WorkspacePage = () => {
 				justifyContent: 'center',
 				flexGrow: 1,
 			}}
-		>
-			<Grid
-				container
-				spacing={2}
-				sx={{
-					border: 1,
-				}}
-			>
-				<Grid
-					item
-					xs={6}
-					lg={3}
-					sx={{
-						borderRight: 1,
-					}}
-				>
-					<ServicesList data={services} />
-				</Grid>
-				<Grid
-					sx={{
-						paddingBottom: 2,
-						overflow: 'auto',
-					}}
-					item
-					xs={6}
-					lg={9}
-				>
-					<DesksGrid data={deskGridData} onDeskClick={setSelectedDesk} selectedDesk={selectedDesk} />
-				</Grid>
-				{!!selectedDesk && (
-					<Grid item xs={12}>
-						<CurrentSchedule deskId={selectedDesk} />
-					</Grid>
-				)}
-			</Grid>
-		</Box>
+		></Box>
 	);
 };

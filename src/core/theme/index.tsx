@@ -4,9 +4,34 @@ const theme = createTheme({
 	typography: {
 		fontFamily: 'Inter, sans-serif',
 	},
+	components: {
+		MuiCssBaseline: {
+			styleOverrides: `
+			@font-face {
+			  font-family: 'Inter';
+			  font-style: normal;
+			  font-display: swap;
+			  font-weight: 400;
+			}
+		  `,
+		},
+		MuiTextField: {
+			styleOverrides: {
+				root: {
+					'& .MuiInputBase-input::placeholder': {
+						color: '#4A4A4A',
+						opacity: 1,
+					},
+				},
+			},
+		},
+	},
 	palette: {
 		primary: {
 			main: '#343434',
+		},
+		secondary: {
+			main: '#C8421B',
 		},
 		background: {
 			default: '#f5f5f5',
