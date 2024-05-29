@@ -1,8 +1,11 @@
-import { ICity, ICountry, IDesk } from '../../../../core/constants/types';
+import { ICity, ICountry, IService } from '../../constants/types';
+import { INewServiceFormData } from '../ServiceForm/types';
 
 export interface IDeskDialogProps {
-	state: { open: boolean; edit?: boolean; desk?: IDesk };
-	onClose: () => void;
+	mode: 'create' | 'edit';
+	onSubmit: (values: IDeskFormValues) => void;
+	onBack: () => void;
+	linkedServices?: INewServiceFormData[];
 }
 
 export interface IDeskFormValues {
@@ -12,12 +15,12 @@ export interface IDeskFormValues {
 	schedule?: {
 		workingDays: number[];
 		workingPeriod: {
-			from: Date;
-			to: Date;
+			from: string;
+			to: string;
 		};
 		workingHours: {
-			from: Date;
-			to: Date;
+			from: string;
+			to: string;
 		};
 		breaks: { from: Date | null; to: Date | null }[];
 		detail: boolean;

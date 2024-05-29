@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useGetDeskByOwner } from '../../core/hooks/useGetDeskByOwner';
-import { ServicesList } from './ServicesList';
+// import { ServicesList } from './ServicesList';
 import { useEffect, useState } from 'react';
 import { ISelectedPricePack } from './types';
 import { SlotsPicker } from './SlotsPicker';
@@ -73,9 +73,9 @@ export default function SchedulePage() {
 							borderRight: 1,
 						}}
 					>
-						{!(deskId && serviceId && packId) && (
+						{/* {!(deskId && serviceId && packId) && (
 							<ServicesList data={dataById || dataByOwner} onSelect={setSelectedPack} selectedPricePack={selectedPack} />
-						)}
+						)} */}
 					</Grid>
 					<Grid
 						sx={{

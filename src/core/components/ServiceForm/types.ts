@@ -1,11 +1,9 @@
 import { SelectChangeEvent } from '@mui/material';
-import { FormikErrors } from 'formik';
 
 export interface IServiceFormProps {
 	mode: 'create' | 'edit';
-	handleFieldChange: (field: string, value: any) => void;
-	values: INewServiceFormData;
-	errors: FormikErrors<INewServiceFormData>;
+	onSubmit: (values: INewServiceFormData) => void;
+	defaultValues?: INewServiceFormData;
 }
 
 export interface ISubcategorySelectProps {
@@ -28,8 +26,8 @@ export interface INewServiceFormData {
 	}[];
 }
 
-export interface IFieldProps {
-	value: string;
-	onChange: (e: React.ChangeEvent<any> | SelectChangeEvent<string>) => void;
+export interface IFieldProps<T = string> {
+	value: T;
+	onChange: (e: { target: { name: string; value: T } }) => void;
 	error?: string;
 }

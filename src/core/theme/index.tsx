@@ -25,6 +25,22 @@ const theme = createTheme({
 				},
 			},
 		},
+		MuiChip: {
+			styleOverrides: {
+				root: {
+					'&.MuiChip-colorPrimary': {
+						backgroundColor: '#f5f5f5',
+						color: '#545454',
+						fontWeight: 600,
+					},
+					'&.MuiChip-colorSecondary': {
+						backgroundColor: '#F65D11',
+						color: '#FFFFFF',
+						fontWeight: 600,
+					},
+				},
+			},
+		},
 	},
 	palette: {
 		primary: {
@@ -47,7 +63,7 @@ const theme = createTheme({
 			'primary-orange': '#F55324',
 			'dark-orange': '#C8421B',
 			'light-grey': '#E7E7E7',
-			'mid-grey': '#4A4A4A',
+			'mid-grey': '#545454',
 		},
 	},
 });

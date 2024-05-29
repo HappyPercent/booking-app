@@ -1,9 +1,9 @@
 export interface IService {
-	id: number;
+	id?: number;
 	name: string;
-	category: ICategory;
-	shortDescr: string;
-	descr: string;
+	category?: ICategory;
+	shortDescr?: string;
+	descr?: string;
 	pricePack?: IPricePack[];
 }
 
