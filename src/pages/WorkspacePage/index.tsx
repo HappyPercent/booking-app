@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { useGetServices } from '../../core/hooks/useGetServices';
 import { useGetDesks } from '../../core/hooks/useGetDesks';
 import { OnboardingWizard } from './OnboardingWizard';
@@ -21,6 +21,8 @@ export const WorkspacePage = () => {
 				justifyContent: 'center',
 				flexGrow: 1,
 			}}
-		></Box>
+		>
+			<Typography variant='h1'>Workspace</Typography>
+		</Box>
 	);
 };
