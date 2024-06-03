@@ -19,7 +19,7 @@ export const OnboardingWizard = () => {
 	const user = getUser();
 	const [wizardData, setWizardData] = useState<{ service?: INewServiceFormData }>({});
 	const queryClient = useQueryClient();
-	const [modalData, setModalData] = useState<{ open: boolean; link: string }>({ open: true, link: `ownerId/${user.id}` });
+	const [modalData, setModalData] = useState<{ open: boolean; link: string }>({ open: false, link: `` });
 	const { mutateAsync: createDesk } = useCreateDeskMutation();
 	const { mutateAsync: createSlotsForDesk } = useCreateSlotsForDeskMutation();
 
