@@ -1,4 +1,4 @@
-import { Box, Button, Card, Stack, Typography } from '@mui/material';
+import { Box, Button, Card, CircularProgress, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +21,7 @@ const schema = Yup.object().shape({
 	city: Yup.object().required('Required'),
 });
 
-export const DeskForm = ({ mode, onSubmit, onBack, linkedServices }: IDeskDialogProps) => {
+export const DeskForm = ({ mode, onSubmit, onBack, linkedServices, isLoading }: IDeskDialogProps) => {
 	const { t } = useTranslation();
 	const create = mode === 'create';
 	const { data: categories } = useGetCategories();
@@ -153,7 +153,7 @@ export const DeskForm = ({ mode, onSubmit, onBack, linkedServices }: IDeskDialog
 				}}
 				onClick={() => handleSubmit()}
 			>
-				{t('Continue')}
+				{isLoading ? <CircularProgress size={24} /> : t('Continue')}
 			</Button>
 		</>
 	);

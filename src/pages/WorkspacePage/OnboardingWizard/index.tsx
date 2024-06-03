@@ -20,12 +20,14 @@ export const OnboardingWizard = () => {
 	const [wizardData, setWizardData] = useState<{ service?: INewServiceFormData }>({});
 	const queryClient = useQueryClient();
 	const [modalData, setModalData] = useState<{ open: boolean; link: string }>({ open: false, link: `` });
-	const { mutateAsync: createDesk } = useCreateDeskMutation();
-	const { mutateAsync: createSlotsForDesk } = useCreateSlotsForDeskMutation();
+	const { mutateAsync: createDesk, isLoading: isCreateDeskLoading } = useCreateDeskMutation();
+	const { mutateAsync: createSlotsForDesk, isLoading: isCreateSlotsForDeskLoading } = useCreateSlotsForDeskMutation();
 
 	// TODO: Fix after start storing userId in local storage
-	const { mutateAsync: createService } = useCreateServiceMutation({ onSuccess: () => setModalData({ open: true, link: `ownerId/${user.id}` }) });
-	const { mutateAsync: linkServiceToDesk } = useLinkServiceToDeskMutation();
+	const { mutateAsync: createService, isLoading: isCreateServiceLoading } = useCreateServiceMutation({
+		onSuccess: () => setModalData({ open: true, link: `ownerId/${user.id}` }),
+	});
+	const { mutateAsync: linkServiceToDesk, isLoading: isLinkServiceToDeskLoading } = useLinkServiceToDeskMutation();
 
 	const handleServiceFormSubmit = (values: INewServiceFormData) => {
 		setWizardData((state) => ({ ...state, service: values }));
@@ -70,6 +72,7 @@ export const OnboardingWizard = () => {
 						onSubmit={handleDeskFormSubmit}
 						mode='create'
 						linkedServices={wizardData.service ? [wizardData.service] : []}
+						isLoading={isCreateDeskLoading || isCreateSlotsForDeskLoading || isCreateServiceLoading || isLinkServiceToDeskLoading}
 					/>
 				)}
 			</Stack>

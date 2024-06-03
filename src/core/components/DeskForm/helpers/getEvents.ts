@@ -36,8 +36,8 @@ export const getEvents = (data: IDeskFormValues['schedule']) => {
 
 const getOneDayEvents = (data: NonNullable<IDeskFormValues['schedule']>) => {
 	const breaks = getPureSortedBreaks(data.breaks);
-	let timeStart = setDayOfYear(setYear(+data.workingHours.from, 1900), 1);
-	const timeEnd = setDayOfYear(setYear(+data.workingHours.to, 1900), 1);
+	let timeStart = setDayOfYear(setYear(new Date(data.workingHours.from), 1900), 1);
+	const timeEnd = setDayOfYear(setYear(new Date(data.workingHours.to), 1900), 1);
 	const res = [];
 	if (!breaks.length) {
 		res.push({ start: timeStart, end: timeEnd });

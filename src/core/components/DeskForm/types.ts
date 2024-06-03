@@ -6,6 +6,7 @@ export interface IDeskDialogProps {
 	onSubmit: (values: IDeskFormValues) => void;
 	onBack: () => void;
 	linkedServices?: INewServiceFormData[];
+	isLoading?: boolean;
 }
 
 export interface IDeskFormValues {
