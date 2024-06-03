@@ -36,7 +36,7 @@ export const FirstLinkModal = ({ open, link, onClose }: IFirstLinkModalProps) =>
 					margin: '20px',
 				}}
 			>
-				<Button disableElevation color='primary' variant='contained' sx={{ textTransform: 'none' }}>
+				<Button disableElevation color='primary' variant='contained' sx={{ textTransform: 'none' }} onClick={onClose}>
 					Done
 				</Button>
 			</DialogActions>
