@@ -1,4 +1,5 @@
 # Booking App
+[![CI](https://github.com/HappyPercent/booking-app/actions/workflows/ci.yml/badge.svg)](https://github.com/HappyPercent/booking-app/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Appointment-booking frontend for independent service providers. A provider lists their services with price packs, defines working hours on a calendar, and shares a link. Clients pick a free slot and book it.
 
