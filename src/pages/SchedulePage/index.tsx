@@ -1,7 +1,6 @@
 import { Box, Grid } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useGetDeskByOwner } from '../../core/hooks/useGetDeskByOwner';
-// import { ServicesList } from './ServicesList';
 import { useEffect, useState } from 'react';
 import { ISelectedPricePack } from './types';
 import { SlotsPicker } from './SlotsPicker';
@@ -11,8 +10,8 @@ import { useGetFreeSlotsByServicePricePack } from '../../core/hooks/useGetFreeSl
 
 export default function SchedulePage() {
 	const { ownerId, deskId, serviceId, packId } = useParams();
-	const { data: dataByOwner, isFetching: isOwnerLoading } = useGetDeskByOwner(ownerId as string);
-	const { data: dataById, isFetching: isDeskLoading } = useGetDeskById(deskId as string);
+	const { isFetching: isOwnerLoading } = useGetDeskByOwner(ownerId as string);
+	const { isFetching: isDeskLoading } = useGetDeskById(deskId as string);
 	const [selectedPack, setSelectedPack] = useState<ISelectedPricePack | undefined>(
 		deskId && serviceId && packId ? { deskId: Number(deskId), proposalId: Number(serviceId), pricePack: { id: Number(packId) } } : undefined
 	);
@@ -73,9 +72,6 @@ export default function SchedulePage() {
 							borderRight: 1,
 						}}
 					>
-						{/* {!(deskId && serviceId && packId) && (
-							<ServicesList data={dataById || dataByOwner} onSelect={setSelectedPack} selectedPricePack={selectedPack} />
-						)} */}
 					</Grid>
 					<Grid
 						sx={{

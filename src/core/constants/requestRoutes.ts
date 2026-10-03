@@ -1,1 +1,1 @@
-export const BASE_ROUTE = 'http://5.180.182.162:8080/bookapp-1/api';
+export const BASE_ROUTE = process.env.REACT_APP_API_URL ?? 'http://localhost:8080/bookapp-1/api';

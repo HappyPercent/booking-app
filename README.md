@@ -1,19 +1,34 @@
-## Available Scripts
+# Booking App
 
-In the project directory, you can run:
+Appointment-booking frontend for independent service providers. A provider lists their services with price packs, defines working hours on a calendar, and shares a link. Clients pick a free slot and book it.
 
-### `npm start`
+React 18 · TypeScript · MUI · FullCalendar · React Query · Zustand · Formik + Yup · i18next (English, Serbian)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Features
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Provider workspace: services with price packs, desks (schedules) and a drag-to-draw weekly calendar
+- Onboarding wizard that creates a first service and schedule, then gives a shareable booking link
+- Public booking page: free slots are computed per service pack, and the provider can confirm or decline
+- Auth, language detection and a typed API client
 
-### `npm run build`
+## Run locally
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This repo is the frontend only. It needs the booking REST backend, which is not included.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm install
+cp .env.example .env   # set REACT_APP_API_URL to your backend
+npm start
+```
+
+`npm run build` creates a production bundle.
+
+## Structure
+
+```
+src/
+  client/    typed HTTP client and API methods
+  core/      components, React Query hooks, store, theme
+  pages/     Login, Register, Workspace, Schedule
+  i18n/      translations and language detector
+```

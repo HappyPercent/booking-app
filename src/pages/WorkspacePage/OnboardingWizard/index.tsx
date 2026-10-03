@@ -11,7 +11,6 @@ import { useCreateSlotsForDeskMutation } from '../../../core/hooks/useCreateSlot
 import { useCreateServiceMutation } from '../../../core/hooks/useCreateServiceMutation';
 import { useQueryClient } from '@tanstack/react-query';
 import { FirstLinkModal } from './FirstLinkModal';
-import { useLinkServiceToDeskMutation } from '../../../core/hooks/useLinkServiceToDeskMutation';
 import { getUser } from '../../../core/helpers/getUser';
 
 export const OnboardingWizard = () => {
@@ -27,7 +26,6 @@ export const OnboardingWizard = () => {
 	const { mutateAsync: createService, isLoading: isCreateServiceLoading } = useCreateServiceMutation({
 		onSuccess: () => setModalData({ open: true, link: `ownerId/${user.id}` }),
 	});
-	const { mutateAsync: linkServiceToDesk, isLoading: isLinkServiceToDeskLoading } = useLinkServiceToDeskMutation();
 
 	const handleServiceFormSubmit = (values: INewServiceFormData) => {
 		setWizardData((state) => ({ ...state, service: values }));
@@ -42,12 +40,10 @@ export const OnboardingWizard = () => {
 			}));
 			const desk = await createDesk(data);
 			await createSlotsForDesk({ deskId: Number(desk.data.data), schedule });
-			const service = await createService(wizardData.service!);
-
-			// TODO: Fix when back will return service id in createSevice api
-			// await linkServiceToDesk({ deskId: Number(desk.data.data), serviceId: Number(service.data.data) });
+			await createService(wizardData.service!);
+			// TODO: link the service to the desk once the API returns the new service id
 		} catch (error) {
-			console.log('error: ', error);
+			console.error('Onboarding failed', error);
 		}
 	};
 
@@ -72,7 +68,7 @@ export const OnboardingWizard = () => {
 						onSubmit={handleDeskFormSubmit}
 						mode='create'
 						linkedServices={wizardData.service ? [wizardData.service] : []}
-						isLoading={isCreateDeskLoading || isCreateSlotsForDeskLoading || isCreateServiceLoading || isLinkServiceToDeskLoading}
+						isLoading={isCreateDeskLoading || isCreateSlotsForDeskLoading || isCreateServiceLoading}
 					/>
 				)}
 			</Stack>

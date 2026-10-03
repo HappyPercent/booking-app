@@ -17,7 +17,6 @@ export const BookingDialog = ({ data }: { data: { ownerId: number; deskId: numbe
 	useEffect(() => {
 		try {
 			const bookingData = queryBooking ? JSON.parse(queryBooking) : null;
-			console.log('bookingData: ', bookingData);
 			setSlotsIds(bookingData?.slotsIds);
 		} catch (e) {
 			console.error('Failed to parse booking data', e);

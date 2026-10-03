@@ -9,7 +9,6 @@ export const WorkEndField = ({ value, onChange, workStartValue }: IFieldProps<st
 	const options = getWorkingTimeOptions();
 
 	useEffect(() => {
-		console.log('workStartValue: ', workStartValue);
 		if (value && workStartValue && new Date(workStartValue) > new Date(value)) {
 			onChange({ target: { name: 'schedule.workingHours.from', value: workStartValue } });
 		}
